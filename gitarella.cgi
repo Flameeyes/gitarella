@@ -99,6 +99,7 @@ else
       cgi.out({"status" => "NOT_FOUND"}) { "File not found" }
       exit
    elsif repos[repo_id].list(filepath)[0]["type"] == "tree"
+      template_params["repopath"] = "/" + filepath
       template_params["files_list"] = repos[repo_id].list(filepath + "/")
       content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
    else
