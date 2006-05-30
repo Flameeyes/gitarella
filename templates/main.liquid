@@ -12,7 +12,8 @@
 <body>
 <div class="page_header">
 <a href="http://www.kernel.org/pub/software/scm/git/docs/" title="git documentation"><img src="{{basepath}}/static/git-logo.png" width="72" height="27" alt="git" style="float:right; border-width:0px;"/></a>
-<a href="{{basepath}}/">projects</a> {% if project_id %}/ <a href="{{basepath}}/{{project_id}}/">{{project_id}}</a>{% endif %} </div>
+<a href="{{basepath}}/">projects</a> {% if project_id %}/ <a href="{{basepath}}/{{project_id}}/">{{project_id}}</a>{% endif %} 
+{% if path %}{% for element in path %}/ <a href="{{basepath}}/{{project_id}}/{{element.path}}">{{element.name}}</a> {% endfor %}{% endif %}</div>
 
 {{content}}
 

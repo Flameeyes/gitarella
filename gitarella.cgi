@@ -94,15 +94,28 @@ else
    template_params["project_description"] = repos[repo_id].description
    template_params["commit_hash"] = repos[repo_id].sha1_head
    template_params["commit_desc"] = repos[repo_id].commit.description
+   template_params["path"] = Array.new
 
    if repos[repo_id].list(filepath).empty?
       cgi.out({"status" => "NOT_FOUND"}) { "File not found" }
       exit
    elsif repos[repo_id].list(filepath)[0]["type"] == "tree"
+      prevelement = ""
+      filepath.split("/").each { |element|
+         template_params["path"] << { "path" => prevelement + "/" + element, "name" => element }
+         prevelement = element
+      }
+
       template_params["repopath"] = "/" + filepath
       template_params["files_list"] = repos[repo_id].list(filepath + "/")
       content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
    else
+      prevelement = ""
+      filepath.split("/").each { |element|
+         template_params["path"] << { "path" => prevelement + "/" + element, "name" => element }
+         prevelement = element
+      }
+
       template_params["file"] = repos[repo_id].list(filepath)[0]
       template_params["file"]["data"] = repos[repo_id].file(filepath)
       if template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
