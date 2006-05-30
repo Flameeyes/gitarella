@@ -67,16 +67,42 @@ if path.size == 0
    template_params["title"] = "gitarella - browse projects"
    content = Liquid::Template.parse( File.open("templates/projects.liquid").read ).render(template_params)
 elsif path.size == 1
-   unless repos.has_key?(path[0])
+   repo_id = path[0]; path.delete_at(0)
+   unless repos.has_key?(repo_id)
       cgi.header({"status" => CGI::NOT_FOUND})
       exit
    end
-   template_params["title"] = "gitarella - #{path[0]}"
-   template_params["project_id"] = path[0]
-   template_params["project_description"] = repos[path[0]].description
-   template_params["commit_hash"] = repos[path[0]].sha1_head
+   template_params["title"] = "gitarella - #{repo_id}"
+   template_params["project_id"] = repo_id
+   template_params["project_description"] = repos[repo_id].description
+   template_params["commit_hash"] = repos[repo_id].sha1_head
+   template_params["commit_desc"] = repos[repo_id].commit.description
+   template_params["files_list"] = repos[repo_id].list
 
    content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
+else
+   repo_id = path[0]; path.delete_at(0)
+   filepath = path.join('/')
+
+   unless repos.has_key?(repo_id)
+      cgi.header({"status" => CGI::NOT_FOUND})
+      exit
+   end
+
+   template_params["title"] = "gitarella - #{repo_id}"
+   template_params["project_id"] = repo_id
+   template_params["project_description"] = repos[repo_id].description
+   template_params["commit_hash"] = repos[repo_id].sha1_head
+   template_params["commit_desc"] = repos[repo_id].commit.description
+
+   if repos[repo_id].list(filepath).empty?
+      cgi.out({"status" => "NOT_FOUND"}) { "File not found" }
+      exit
+   elsif repos[repo_id].list(filepath)[0]["type"] == "tree"
+      template_params["files_list"] = repos[repo_id].list(filepath + "/")
+      content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
+   else
+   end
 end
 
 cgi.out {

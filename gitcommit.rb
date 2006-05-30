@@ -16,7 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 class GITCommit
-   attr_accessor :author_name, :author_time, :commit_name, :commit_time
+   attr_accessor :author_name, :author_time, :commit_name, :commit_time,
+      :description, :tree
 
    def initialize(repo, sha1)
       @repo = repo
@@ -26,19 +27,29 @@ class GITCommit
       data = gitproc.read.split("\n")
       gitproc.close
 
-      @parent = data[2].split[1].chomp
-      @tree = data[1].split[1].chomp
-      return nil unless data[0] == "#{@sha1} #{@parent}"
+      $stderr.puts data.inspect
 
-      data[3] =~ /^author (.*) ([0-9]+) (\+[0-9]{4})$/
+      verify_report = data[0].chomp; data.delete_at(0)
+      @tree = data[0].split[1].chomp; data.delete_at(0)
+      if data[0] =~ /^parent.*/
+         @parent = data[0].split[1].chomp; data.delete_at(0)
+         return nil unless verify_report == "#{@sha1} #{@parent}"
+      else
+         @parent = nil
+         return nil unless verify_report == "#{@sha1}"
+      end
+
+      data[0] =~ /^author (.*) ([0-9]+) (\+[0-9]{4})$/
       @author_name = $1
       @author_time = Time.at($2.to_i)
       # author_tz = $3 # TODO Implement timezone diff
 
-      data[4] =~ /^committer (.*) ([0-9]+) (\+[0-9]{4})$/
+      data[1] =~ /^committer (.*) ([0-9]+) (\+[0-9]{4})$/
       @commit_name = $1
       @commit_time = Time.at($2.to_i)
       # committer_tz = $3 # TODO Implement timezone diff
+
+      @description = data[3..data.size].join("\n")
    end
 end
 

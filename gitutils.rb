@@ -1,5 +1,6 @@
 # Gitarella - web interface for GIT
 # Copyright (c) 2006 Diego "Flameeyes" Pettenò <flameeyes@gentoo.org>
+# Portions copyright (c) 2005 Kay Sievers and Christian Gierke
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,8 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# age_string function Copyright (c) 2005 Kay Sievers and Christian Gierke
-# took from gitweb
+# age_string function took from gitweb
 def age_string(age)
    if age > 60*60*24*365*2
       return "#{(age/(60*60*24*365)).to_i} years ago"
@@ -34,6 +34,29 @@ def age_string(age)
       return "#{(age).to_i} secs ago"
    else
       return "right now"
+   end
+end
+
+# mode_str function took from gitweb
+def mode_str(mode)
+   vS_IFMT = 0170000
+   vS_IFDIR = 040000
+   vS_IFLNK = 0120000
+   vS_IFREG = 0100000
+   vS_IXUSR = 0100
+
+   if mode&vS_IFMT == vS_IFDIR
+      return 'drwxr-xr-x'
+   elsif mode == vS_IFLNK
+      return 'lrwxrwxrwx'
+   elsif mode&vS_IFMT == vS_IFREG
+      if mode & vS_IXUSR
+         return '-rwxr-xr-x'
+      else
+         return '-rw-r--r--'
+      end
+   else
+      return '----------'
    end
 end
 

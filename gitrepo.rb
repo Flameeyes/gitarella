@@ -64,6 +64,24 @@ class GITRepo
 
       nil
    end
+
+   def list(path = ".")
+      files = Array.new
+
+      push_gitdir
+      gitproc = IO.popen("git-ls-tree #{commit.tree} #{path}")
+
+      gitproc.each_line { |line|
+         linedata = line.split
+         files << { "perms" => linedata[0].oct, "perms_string" => mode_str(linedata[0].oct),
+         "type" => linedata[1], "sha1" => linedata[2], "name" => linedata[3].sub("#{path}", '') }
+      }
+
+      $stderr.puts files.inspect
+
+      gitproc.close
+      return files
+   end
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;
