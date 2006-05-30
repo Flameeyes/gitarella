@@ -39,7 +39,7 @@ if path[0] == "static"
    exit
 end
 
-template_params = { "basepath" => cgi.script_name }
+template_params = { "basepath" => cgi.script_name, "currpath" => cgi.script_name + cgi.path_info }
 repos = Hash.new
 
 config["repositories"].each { |repo|
@@ -63,7 +63,20 @@ if path.size == 0
 
       template_params["repositories"] << repo
    }
+
+   template_params["title"] = "gitarella - browse projects"
    content = Liquid::Template.parse( File.open("templates/projects.liquid").read ).render(template_params)
+elsif path.size == 1
+   unless repos.has_key?(path[0])
+      cgi.header({"status" => CGI::NOT_FOUND})
+      exit
+   end
+   template_params["title"] = "gitarella - #{path[0]}"
+   template_params["project_id"] = path[0]
+   template_params["project_description"] = repos[path[0]].description
+   template_params["commit_hash"] = repos[path[0]].sha1_head
+
+   content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
 end
 
 cgi.out {
