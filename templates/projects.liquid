@@ -1,0 +1,18 @@
+<table cellspacing="0">
+<tr>
+<th>Project</th>
+<th><a class="header" href="/?o=descr">Description</a></th>
+<th><a class="header" href="/?o=owner">Owner</a></th>
+<th><a class="header" href="/?o=age">Last Change</a></th>
+<th></th>
+</tr>
+{% for repo in repositories %}
+  <tr class="light">
+  <td><a class="list" href="{{basepath}}/{{repo.id}}/">{{repo.id}}</a></td>
+  <td>{{repo.description}}</td>
+  <td><i>{{repo.owner}}</i></td>
+  <td><i>{{repo.last_change}}</i></td>
+  <td class="link"><a href="{{basepath}}/{{repo.id}}">summary</a> | <a href="{{basepath}}/{{repo.id}}?mode=shortlog">shortlog</a> | <a href="{{basepath}}/{{repo.id}}?mode=log">log</a></td>
+  </tr>
+{% endfor %}
+</table>
