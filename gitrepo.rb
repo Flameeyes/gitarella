@@ -73,8 +73,9 @@ class GITRepo
 
       gitproc.each_line { |line|
          linedata = line.split
+
          files << { "perms" => linedata[0].oct, "perms_string" => mode_str(linedata[0].oct),
-         "type" => linedata[1], "sha1" => linedata[2], "name" => linedata[3].sub("#{path}", '') }
+         "type" => linedata[1], "sha1" => linedata[2], "name" => linedata[3].split("/")[-1] }
       }
 
       $stderr.puts files.inspect
