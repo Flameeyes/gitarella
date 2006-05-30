@@ -82,6 +82,18 @@ class GITRepo
       gitproc.close
       return files
    end
+
+   def file(path)
+      listing = list(path)[0]
+      return unless listing
+
+      push_gitdir
+      gitproc = IO.popen("git-cat-file #{listing["type"]} #{listing["sha1"]}")
+      data = gitproc.read
+
+      gitproc.close
+      return data
+   end
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

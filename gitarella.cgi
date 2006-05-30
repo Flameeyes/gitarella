@@ -102,6 +102,9 @@ else
       template_params["files_list"] = repos[repo_id].list(filepath + "/")
       content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
    else
+      template_params["file"] = repos[repo_id].list(filepath)[0]
+      template_params["file"]["lines"] = repos[repo_id].file(filepath).split("\n")
+      content = Liquid::Template.parse( File.open("templates/blob.liquid").read ).render(template_params)
    end
 end
 
