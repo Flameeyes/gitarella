@@ -1,0 +1,10 @@
+# kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 2;
+#
+# Configuration file for gitarella
+
+{
+  repositories: [
+    { id: "rubytag++", path: "/home/flame/devel/repos/rubytag++/.git" },
+    { id: "overlay", path: "/var/portage/cvs/flame-overlay/.git", owner: "Flameeyes" }
+  ]
+}
