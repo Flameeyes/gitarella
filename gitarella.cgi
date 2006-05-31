@@ -118,7 +118,7 @@ else
 
       template_params["file"] = repos[repo_id].list(filepath)[0]
       template_params["file"]["data"] = repos[repo_id].file(filepath)
-      if template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
+      if cgi["mode"] == "checkout" or template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
          staticmime = FileMagic.new(FileMagic::MAGIC_MIME).buffer(template_params["file"]["data"])
 
          cgi.out({ "content-type" => staticmime}) { template_params["file"]["data"] }
