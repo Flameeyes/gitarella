@@ -70,6 +70,9 @@ class GITRepo
    end
 
    def list(path = ".")
+      return $memcache["git-list_#{commit.tree}_#{path}"] \
+         if $memcache and $memcache["git-list_#{commit.tree}_#{path}"]
+
       files = Array.new
 
       push_gitdir
@@ -85,6 +88,8 @@ class GITRepo
       $stderr.puts files.inspect
 
       gitproc.close
+
+      $memcache["git-list_#{commit.tree}_#{path}"] = files if $memcache
       return files
    end
 
