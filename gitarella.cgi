@@ -108,9 +108,11 @@ elsif path.size == 1
    count = 0
    while commit and ( cgi["mode"] == "shortlog" or cgi["mode"] == "log" or ( cgi["mode"] == "summary" and count < 16 ) )
       ci = commit.to_hash
-      ci["last_change_age"] = age_string( Time.now - commit.commit_time )
+      ci["commit_date_age"] = age_string( Time.now - commit.commit_time )
+      ci["author_date_str"] = Time.at(repos[repo_id].commit.author_time).to_s
 
-      ci["description"] = str_reduce(ci["description"], 80) if cgi["mode"] == "summary" or cgi["mode"] == "shortlog"
+      ci["short_description"] = str_reduce(ci["description"], 80)
+      ci["description"].gsub!("\n", "<br />\n")
 
       template_params["commits"] << ci
       count = count+1
@@ -125,6 +127,8 @@ elsif path.size == 1
       content = Liquid::Template.parse( File.open("templates/project-summary.liquid").read ).render(template_params)
    elsif cgi["mode"] == "shortlog"
       content = Liquid::Template.parse( File.open("templates/project-shortlog.liquid").read ).render(template_params)
+   elsif cgi["mode"] == "log"
+      content = Liquid::Template.parse( File.open("templates/project-log.liquid").read ).render(template_params)
    else
    end
 else
