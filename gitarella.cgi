@@ -92,8 +92,37 @@ elsif path.size == 1
    template_params["commit_hash"] = repos[repo_id].sha1_head
    template_params["commit_desc"] = repos[repo_id].commit.description
    template_params["files_list"] = repos[repo_id].list
+   template_params["repository"] = repos[repo_id].to_hash
+   template_params["repository"]["last_change_date"] = Time.at(repos[repo_id].commit.commit_time).to_s
+   template_params["heads"] = Array.new
 
-   content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
+   repos[repo_id].heads.each_pair { |name, head|
+      template_params["heads"] << { "name" => name, "sha1" => head,
+         "last_change_str" => age_string( Time.now - repos[repo_id].commit(head).commit_time )
+         }
+   }
+
+   template_params["commits"] = Array.new
+
+   commit = repos[repo_id].commit
+   count = 0
+   while commit and ( cgi["mode"] == "shortlog" or cgi["mode"] == "log" or ( cgi["mode"] == "summary" and count < 16 ) )
+      ci = commit.to_hash
+      ci["last_change_age"] = age_string( Time.now - commit.commit_time )
+
+      template_params["commits"] << ci
+      count = count+1
+      commit = commit.parent_commit
+   end
+
+   template_params["more_commits"] = true if commit
+
+   if not cgi.has_key?("mode") or cgi["mode"] == "tree"
+      content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
+   elsif cgi["mode"] == "summary"
+      content = Liquid::Template.parse( File.open("templates/project-summary.liquid").read ).render(template_params)
+   else
+   end
 else
    repo_id = path[0]; path.delete_at(0)
    filepath = path.join('/')

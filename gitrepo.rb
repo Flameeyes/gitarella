@@ -104,6 +104,24 @@ class GITRepo
       gitproc.close
       return data
    end
+
+   def heads()
+      p = Pathname.new(@path + "/refs/heads")
+      return unless p.directory?
+
+      heads = Hash.new
+
+      p.entries.each { |entry|
+         entry = Pathname.new(@path + "/refs/heads/" + entry)
+         next if entry.directory?
+
+         heads[entry.basename] = entry.read.chomp
+      }
+
+      $stderr.puts heads.inspect
+
+      return heads
+   end
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

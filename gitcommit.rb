@@ -51,6 +51,18 @@ class GITCommit
 
       @description = data[3..data.size].join("\n")
    end
+
+   def parent_commit
+      @repo.commit(@parent)
+   end
+
+   def to_hash
+      return {
+         "sha1" => @sha1, "tree" => @tree, "author_name" => @author_name,
+         "author_time" => @author_time, "commit_name" => @commit_name,
+         "commit_time" => @commit_time, "description" => @description
+      }
+   end
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

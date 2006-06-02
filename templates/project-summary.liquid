@@ -1,0 +1,35 @@
+</div>
+<div class="page_nav">
+summary | <a href="{{currpath}}?mode=shortlog">shortlog</a> | <a href="{{currpath}}?mode=log">log</a> | <a href="{{currpath}}?mode=commit;h={{commit_hash}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/><br/>
+</div>
+<div class="title">&nbsp;</div>
+<table cellspacing="0">
+<tr><td>description</td><td>{{repository.description}}</td></tr>
+<tr><td>owner</td><td>{{repository.owner}}</td></tr>
+<tr><td>last change</td><td>{{repository.last_change_date}}</td></tr>
+</table>
+<div>
+<a class="title" href="{{currpath}}?mode=shortlog">shortlog</a></div>
+<table cellspacing="0">
+{% for commit in commits %}
+<tr class="light">
+<td><i>{{commit.last_change_age}}</i></td>
+<td><i>{{commit.author}}</i></td>
+<td><a class="list" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><b>{{commit.description}}</b></a></td>
+<td class="link"><a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a></td>
+</tr>
+{% endfor %}
+{% if more_commits %}
+<tr class="light"><td><a href="{{currpath}}?mode=shortlog">...</a></td></tr>
+{% endif %}
+</table><div>
+<a class="title" href="{{currpath}}?mode=heads">heads</a></div>
+<table cellspacing="0">
+{% for head in heads %}
+<tr class="light">
+<td><i>{{ head.last_change_str }}</i></td>
+<td><a class="list" href="{{currpath}}?mode=shortlog;h={{head.name}}"><b>{{head.name}}</b></a></td>
+<td class="link"><a href="{{currpath}}?mode=shortlog;h={{head.name}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{head.name}}">log</a></td>
+</tr>
+{% endfor %}
+</table>
