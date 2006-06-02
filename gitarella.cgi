@@ -27,6 +27,13 @@ require "gitutils"
 
 config = YAML::load(File.new("gitarella-config.yml").read)
 
+$memcache = nil
+
+if config["memcache-servers"] and not config["memcache-servers"].empty?
+   require "memcache"
+   $memcache = MemCache::new(config["memcache-servers"], :namespace => 'gitarella', :compression => 'true')
+end
+
 cgi = CGI.new
 path = cgi.path_info.split(/\/+/).delete_if { |x| x.empty? }
 

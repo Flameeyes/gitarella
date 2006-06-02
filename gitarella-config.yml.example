@@ -7,4 +7,7 @@
     { id: "rubytag++", path: "/home/flame/devel/repos/rubytag++/.git" },
     { id: "overlay", path: "/var/portage/cvs/flame-overlay/.git", owner: "Flameeyes" }
   ]
+  # uncomment the following to enable memcached support
+  # requires Ruby-MemCache
+  # , memcache-servers: [ "127.0.0.1:11211" ]
 }
