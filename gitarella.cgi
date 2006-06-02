@@ -56,9 +56,11 @@ if path.size == 0
 
       repo = gitrepo.to_hash
       if gitrepo.commit
-         repo["last_change"] = age_string( Time.now - gitrepo.commit.commit_time)
+         repo["last_change"] = Time.now - gitrepo.commit.commit_time
+         repo["last_change_str"] = age_string( Time.now - gitrepo.commit.commit_time )
       else
-         repo["last_change"] = "never"
+         repo["last_change"] = Time.now
+         repo["last_change_str"] = "never"
       end
 
       template_params["repositories"] << repo
