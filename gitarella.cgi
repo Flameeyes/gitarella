@@ -110,6 +110,8 @@ elsif path.size == 1
       ci = commit.to_hash
       ci["last_change_age"] = age_string( Time.now - commit.commit_time )
 
+      ci["description"] = str_reduce(ci["description"], 80) if cgi["mode"] == "summary" or cgi["mode"] == "shortlog"
+
       template_params["commits"] << ci
       count = count+1
       commit = commit.parent_commit

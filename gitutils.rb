@@ -60,4 +60,14 @@ def mode_str(mode)
    end
 end
 
+# originally chop_str in gitweb
+def str_reduce(str, len)
+   str =~ /^(.{0,#{len}}[^ \/\-_:\.@]{0,5})(.*)/
+   body = $1
+   tail = $2
+   tail = "..." if tail and tail.size > 4
+
+   "#{body}#{tail}"
+end
+
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;
