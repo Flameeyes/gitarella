@@ -1,9 +1,9 @@
 <table cellspacing="0">
 <tr>
-<th>Project</th>
-<th><a class="header" href="/?o=descr">Description</a></th>
-<th><a class="header" href="/?o=owner">Owner</a></th>
-<th><a class="header" href="/?o=age">Last Change</a></th>
+<th>{% if sort != "id" %}<a href="{{currpath}}?sort=id">{% endif %}Project{% if sort != "id" %}</a>{% endif %}</th>
+<th>{% if sort != "description" %}<a href="{{currpath}}?sort=description">{% endif %}Description{% if sort != "description" %}</a>{% endif %}</th>
+<th>{% if sort != "owner" %}<a href="{{currpath}}?sort=owner">{% endif %}Owner{% if sort != "owner" %}</a>{% endif %}</th>
+<th>{% if sort != "last_change" %}<a href="{{currpath}}?sort=last_change">{% endif %}Last Change{% if sort != "last_change" %}</a>{% endif %}</th>
 <th></th>
 </tr>
 {% for repo in repositories %}

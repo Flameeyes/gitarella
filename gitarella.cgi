@@ -64,6 +64,11 @@ if path.size == 0
       template_params["repositories"] << repo
    }
 
+   template_params["sort"] = cgi.has_key?("sort") ? cgi["sort"] : "id"
+   template_params["sort"] = sort if not template_params["repositories"][0].has_key?(template_params["sort"])
+
+   template_params["repositories"].sort! { |x, y| x[template_params["sort"]] <=> y[template_params["sort"]] }
+
    template_params["title"] = "gitarella - browse projects"
    content = Liquid::Template.parse( File.open("templates/projects.liquid").read ).render(template_params)
 elsif path.size == 1
