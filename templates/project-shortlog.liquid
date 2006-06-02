@@ -1,0 +1,24 @@
+<div class="page_nav">
+<div class="page_nav">
+<a href="{{currpath}}?mode=summary">summary</a> | shortlog | <a href="{{currpath}}?mode=log;h=">log</a> | <a href="{{currpath}}?mode=commit;h={{commit_hash}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/><br/>
+<!-- It's not funny to put all in one page... but leave it here for now :P
+HEAD &sdot; prev &sdot; <a title="Alt-n" accesskey="n" href="/?p=rubytagxx.git;a=shortlog;h=52b3c0f6245d427689de7eee15673ba76c17706c;pg=1">next</a><br/>
+-->
+</div>
+<div>
+<a class="title" href="{{currpath}}?mode=summary">&nbsp;</a></div>
+<table cellspacing="0">
+{% for commit in commits %}
+<tr class="light">
+<td><i>{{commit.last_change_age}}</i></td>
+<td><i>{{commit.author}}</i></td>
+<td><a class="list" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><b>{{commit.description}}</b></a></td>
+<td class="link"><a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a></td>
+</tr>
+{% endfor %}
+<!-- It's not funny to put all in one page... but leave it here for now :P
+<td><a title="Alt-n" href="/?p=rubytagxx.git;a=shortlog;h=52b3c0f6245d427689de7eee15673ba76c17706c;pg=1">next</a></td>
+-->
+</tr>
+</table>
+</div>

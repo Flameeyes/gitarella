@@ -121,6 +121,8 @@ elsif path.size == 1
       content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
    elsif cgi["mode"] == "summary"
       content = Liquid::Template.parse( File.open("templates/project-summary.liquid").read ).render(template_params)
+   elsif cgi["mode"] == "shortlog"
+      content = Liquid::Template.parse( File.open("templates/project-shortlog.liquid").read ).render(template_params)
    else
    end
 else
