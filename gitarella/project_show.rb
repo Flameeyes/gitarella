@@ -31,7 +31,7 @@ class GitarellaCGI
             @content = parse_template("project-" + mode)
 
          else # fallback
-            @content = parse_template(tree)
+            @content = parse_template("tree")
       end
    end
 
