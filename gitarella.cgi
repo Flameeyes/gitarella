@@ -18,6 +18,9 @@
 
 require 'gitarella/gitarella'
 
-handle_request(CGI.new)
+include Gitarella
+
+GitarellaCGI::init_repos
+handle(CGI.new)
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

@@ -32,14 +32,17 @@ class CGI
 end
 
 require 'gitarella/gitarella'
+include Gitarella
 
 STDERR.close
+
+GitarellaCGI::init_repos
 
 countReq = 0; t0 = Time.new
 # Process CGI requests sent by the fastCGI engine
 FCGI.each_cgi do |cgi|
    countReq += 1
-   handle_request(cgi)
+   handle(cgi)
 
    # Garbage Collect regularly to help keep memory
    # footprint low enough without costing too much time.

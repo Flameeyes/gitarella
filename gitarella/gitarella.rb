@@ -23,6 +23,8 @@ require "pathname"
 
 require "gitarella/gitrepo"
 require "gitarella/gitutils"
+require "gitarella/project_show"
+require "gitarella/tree_browse"
 
 $config = YAML::load(File.new("gitarella-config.yml").read)
 
@@ -33,156 +35,89 @@ if $config["memcache-servers"] and not $config["memcache-servers"].empty?
    $memcache = MemCache::new($config["memcache-servers"], :namespace => 'gitarella', :compression => 'true')
 end
 
-def handle_request(cgi)
-   path = cgi.path_info.split(/\/+/).delete_if { |x| x.empty? }
+module Gitarella
+   class GitarellaCGI
+      attr_reader :path
 
-   # Rule out the static files immediately
-   if path[0] == "static"
-      staticfile = File.open(".#{cgi.path_info}")
-      staticmime = FileMagic.new(FileMagic::MAGIC_MIME|FileMagic::MAGIC_SYMLINK).file(".#{cgi.path_info}")
+      @@repos = Hash.new
 
-      cgi.out({ "content-type" => staticmime}) { staticfile.read }
-      return
-   end
+      def GitarellaCGI.init_repos
+         @@repos = Hash.new
 
-   template_params = { "basepath" => cgi.script_name, "currpath" => cgi.script_name + cgi.path_info }
-   repos = Hash.new
-
-   $config["repositories"].each { |repo|
-      gitrepo = GITRepo.new(repo)
-      repos[gitrepo.id] = gitrepo
-   }
-
-   content = ""
-
-   if path.size == 0
-      template_params["repositories"] = Array.new
-      repos.each_pair { |id, gitrepo|
-         next unless gitrepo.valid
-
-         repo = gitrepo.to_hash
-         if gitrepo.commit
-            repo["last_change"] = Time.now - gitrepo.commit.commit_time
-            repo["last_change_str"] = age_string( Time.now - gitrepo.commit.commit_time )
-         else
-            repo["last_change"] = Time.now
-            repo["last_change_str"] = "never"
-         end
-
-         template_params["repositories"] << repo
-      }
-
-      template_params["sort"] = cgi.has_key?("sort") ? cgi["sort"] : "id"
-      template_params["sort"] = sort if not template_params["repositories"][0].has_key?(template_params["sort"])
-
-      template_params["repositories"].sort! { |x, y| x[template_params["sort"]] <=> y[template_params["sort"]] }
-
-      template_params["title"] = "gitarella - browse projects"
-      content = Liquid::Template.parse( File.open("templates/projects.liquid").read ).render(template_params)
-   elsif path.size == 1
-      repo_id = path[0]; path.delete_at(0)
-      unless repos.has_key?(repo_id)
-         cgi.out({"status" => "NOT_FOUND"}) { "" }
-         return
-      end
-      template_params["title"] = "gitarella - #{repo_id}"
-      template_params["project_id"] = repo_id
-      template_params["project_description"] = repos[repo_id].description
-      template_params["commit_hash"] = repos[repo_id].sha1_head
-      template_params["commit_desc"] = repos[repo_id].commit.description
-      template_params["files_list"] = repos[repo_id].list
-      template_params["repository"] = repos[repo_id].to_hash
-      template_params["repository"]["last_change_date"] = Time.at(repos[repo_id].commit.commit_time).to_s
-      template_params["heads"] = Array.new
-
-      repos[repo_id].heads.each_pair { |name, head|
-         template_params["heads"] << { "name" => name, "sha1" => head,
-            "last_change_str" => age_string( Time.now - repos[repo_id].commit(head).commit_time )
-            }
-      }
-
-      template_params["commits"] = Array.new
-
-      commit = repos[repo_id].commit
-      count = 0
-      while commit and ( cgi["mode"] == "shortlog" or cgi["mode"] == "log" or ( cgi["mode"] == "summary" and count < 16 ) )
-         ci = commit.to_hash
-         ci["commit_date_age"] = age_string( Time.now - commit.commit_time )
-         ci["author_date_str"] = Time.at(repos[repo_id].commit.author_time).to_s
-
-         ci["short_description"] = str_reduce(ci["description"], 80)
-         ci["description"].gsub!("\n", "<br />\n")
-
-         template_params["commits"] << ci
-         count = count+1
-         commit = commit.parent_commit
+         $config["repositories"].each { |repo|
+            gitrepo = GITRepo.new(repo)
+            @@repos[gitrepo.id] = gitrepo
+         }
       end
 
-      template_params["more_commits"] = true if commit
+      def initialize(cgi)
+         @cgi = cgi
+         @path = cgi.path_info.split(/\/+/).delete_if { |x| x.empty? }
 
-      if not cgi.has_key?("mode") or cgi["mode"] == "tree"
-         content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
-      elsif cgi["mode"] == "summary"
-         content = Liquid::Template.parse( File.open("templates/project-summary.liquid").read ).render(template_params)
-      elsif cgi["mode"] == "shortlog"
-         content = Liquid::Template.parse( File.open("templates/project-shortlog.liquid").read ).render(template_params)
-      elsif cgi["mode"] == "log"
-         content = Liquid::Template.parse( File.open("templates/project-log.liquid").read ).render(template_params)
-      else
-      end
-   else
-      repo_id = path[0]; path.delete_at(0)
-      filepath = path.join('/')
+         # Rule out the static files immediately
+         return static_file(".#{cgi.path_info}") if @path[0] == "static"
 
-      unless repos.has_key?(repo_id)
-         cgi.header({"status" => CGI::NOT_FOUND})
-         return
-      end
-
-      template_params["title"] = "gitarella - #{repo_id}"
-      template_params["project_id"] = repo_id
-      template_params["project_description"] = repos[repo_id].description
-      template_params["commit_hash"] = repos[repo_id].sha1_head
-      template_params["commit_desc"] = repos[repo_id].commit.description
-      template_params["path"] = Array.new
-
-      if repos[repo_id].list(filepath).empty?
-         cgi.out({"status" => "NOT_FOUND"}) { "File not found" }
-         return
-      elsif repos[repo_id].list(filepath)[0]["type"] == "tree"
-         prevelement = ""
-         filepath.split("/").each { |element|
-            template_params["path"] << { "path" => prevelement + "/" + element, "name" => element }
-            prevelement = element
+         @template_params = {
+            "basepath" => cgi.script_name,
+            "currpath" => cgi.script_name + cgi.path_info
          }
 
-         template_params["repopath"] = "/" + filepath
-         template_params["files_list"] = repos[repo_id].list(filepath + "/")
-         content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
-      else
-         prevelement = ""
-         filepath.split("/").each { |element|
-            template_params["path"] << { "path" => prevelement + "/" + element, "name" => element }
-            prevelement = element
+         @content = ""
+
+         case path.size
+            when 0 then project_list
+            when 1 then project_show
+            else tree_browse
+         end
+
+         @template_params["content"] = @content
+         @cgi.out {
+            Liquid::Template.parse( File.open("templates/main.liquid").read ).render(@template_params)
+         }
+      end
+
+      def project_list
+         @template_params["repositories"] = Array.new
+         @@repos.each_value { |gitrepo|
+            next unless gitrepo.valid
+            @template_params["repositories"] << gitrepo.to_hash
          }
 
-         template_params["file"] = repos[repo_id].list(filepath)[0]
-         template_params["file"]["data"] = repos[repo_id].file(filepath)
-         if cgi["mode"] == "checkout" or template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
-            staticmime = FileMagic.new(FileMagic::MAGIC_MIME).buffer(template_params["file"]["data"])
+         @template_params["sort"] = @cgi.has_key?("sort") ? @cgi["sort"] : "id"
+         @template_params["sort"] = "id" if not @template_params["repositories"][0].has_key?(@template_params["sort"])
+         @template_params["repositories"].sort! { |x, y| x[@template_params["sort"]] <=> y[@template_params["sort"]] }
 
-            cgi.out({ "content-type" => staticmime}) { template_params["file"]["data"] }
-            return
-         else
-            template_params["file"]["lines"] = template_params["file"]["data"].split("\n")
-            content = Liquid::Template.parse( File.open("templates/blob.liquid").read ).render(template_params)
-         end
+         @template_params["title"] = "gitarella - browse projects"
+         @content = Liquid::Template.parse( File.open("templates/projects.liquid").read ).render(@template_params)
+      end
+
+      def static_file(path)
+            staticfile = File.open(path)
+            staticmime = FileMagic.new(FileMagic::MAGIC_MIME|FileMagic::MAGIC_SYMLINK).file(path)
+            @cgi.out({ "content-type" => staticmime}) { staticfile.read }
+            return nil
+      end
+
+      def get_repo_id
+         @repo_id = @path[0]; @path.delete_at(0)
+         return @cgi.out({"status" => CGI::HTTP_STATUS["NOT_FOUND"]}) { "Repository not found" } \
+            if not @@repos.has_key?(@repo_id)
+
+         $stderr.puts @@repos[@repo_id].inspect
+         @commit_hash = (@cgi.has_key?("h") and not @cgi["h"].empty?) ? @cgi["h"] : @@repos[@repo_id].sha1_head
+         $stderr.puts @commit_hash
+
+         @template_params["title"] = "gitarella - #{@repo_id}"
+         @template_params["commit_hash"] = @commit_hash
+         @template_params["commit_desc"] = @@repos[@repo_id].commit(@commit_hash).description
+         @template_params["files_list"] = @@repos[@repo_id].list
+         @template_params["repository"] = @@repos[@repo_id].to_hash
       end
    end
 
-   cgi.out {
-      Liquid::Template.parse( File.open("templates/main.liquid").read ).render(template_params.merge({ "content" => content }))
-   }
+   def handle(cgi)
+      GitarellaCGI.new(cgi)
+   end
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

@@ -16,8 +16,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 class GITCommit
-   attr_accessor :author_name, :author_time, :commit_name, :commit_time,
-      :description, :tree
+   attr_accessor :author_name, :author_time, :commit_name, :commit_time, :tree,
+      :sha1
 
    def initialize(repo, sha1)
       @repo = repo
@@ -52,15 +52,34 @@ class GITCommit
       @description = data[3..data.size].join("\n")
    end
 
-   def parent_commit
+   def parent
       @repo.commit(@parent)
+   end
+
+   def commit_date_age
+      age_string( Time.now - commit_time )
+   end
+
+   def author_date_str
+      Time.at(author_time).to_s
+   end
+
+   def short_description(size = 80)
+      str_reduce(@description, size)
+   end
+
+   def description
+      @description.gsub("\n", "<br />")
    end
 
    def to_hash
       return {
-         "sha1" => @sha1, "tree" => @tree, "author_name" => @author_name,
-         "author_time" => @author_time, "commit_name" => @commit_name,
-         "commit_time" => @commit_time, "description" => @description
+         "sha1" => @sha1, "tree" => @tree,
+         "author_name" => @author_name, "author_time" => @author_time,
+         "author_date_str" => author_date_str,
+         "commit_name" => @commit_name, "commit_time" => @commit_time,
+         "commit_date_age" => commit_date_age,
+         "description" => description, "short_description" => short_description
       }
    end
 end

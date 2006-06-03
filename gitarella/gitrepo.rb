@@ -36,13 +36,6 @@ class GITRepo
       @owner = "n/a" unless @owner
    end
 
-   def to_hash
-      return unless @valid
-
-      { "id" => @id, "path" => @path, "description" => @description,
-        "owner" => @owner }
-   end
-
    def push_gitdir
       ENV["GIT_DIR"] = "#{path}"
    end
@@ -105,7 +98,7 @@ class GITRepo
       return data
    end
 
-   def heads()
+   def heads
       p = Pathname.new(@path + "/refs/heads")
       return unless p.directory?
 
@@ -121,6 +114,41 @@ class GITRepo
       $stderr.puts heads.inspect
 
       return heads
+   end
+
+   def last_change
+      return Time.now if not commit
+
+      Time.now - commit.commit_time
+   end
+
+   def last_change_age
+      return "n/a" if not commit
+
+      age_string( Time.now - commit.commit_time )
+   end
+
+   def last_change_str
+      return "n/a" if not commit
+
+      Time.at(commit.commit_time).to_s
+   end
+
+   def to_hash
+      return unless @valid
+
+      headshashes = Array.new
+      heads.each_pair{ |name, head|
+         headshashes << {
+            "name" => name, "sha1" => head,
+            "last_change_str" => age_string( Time.now - commit(head).commit_time )
+            }
+      }
+
+      { "id" => @id, "path" => @path, "description" => @description,
+        "owner" => @owner, "last_change" => last_change,
+        "last_change_age" => last_change_age, "last_change_str" => last_change_str,
+        "heads" => headshashes }
    end
 end
 
