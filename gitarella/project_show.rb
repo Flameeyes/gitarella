@@ -30,6 +30,10 @@ class GitarellaCGI
             get_commits( @commit_hash, 30 )
             @content = parse_template("project-" + mode)
 
+         when "commit"
+            @template_params["commit"] = @repo.commit(@commit_hash).to_hash
+            @content = parse_template("project-commit")
+
          else # fallback
             @content = parse_template("tree")
       end

@@ -1,0 +1,29 @@
+<div class="page_nav">
+<a href="{{currpath}}?mode=summary">summary</a> | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit_hash}}">log</a> | commit | <a href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/>
+<br/></div>
+<div>
+<a class="title" href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">{{commit.short_description}}</a>
+</div>
+<div class="title_text">
+<table cellspacing="0">
+<tr><td>author</td><td>{{commit.author_name}}</td></tr>
+<tr><td></td><td>{{commit.author_date_str}}</td></tr>
+<tr><td>committer</td><td>{{commit.commit_name}}</td></tr>
+<tr><td></td><td>{{commit.commit_date_str}}</td></tr>
+<tr><td>commit</td><td style="font-family:monospace">{{commit.sha1}}</td></tr>
+<tr><td>tree</td><td style="font-family:monospace"><a class="list" href="{{currpath}}?mode=tree;treehash={{commit.tree}}">{{commit.tree}}</a></td><td class="link"><a href="{{currpath}}?mode=tree;treehash={{commit.tree}}">tree</a></td></tr>
+<tr><td>parent</td><td style="font-family:monospace"><a class="list" href="{{currpath}}?mode=commit;h={{commit.parent_sha1}}">{{commit.parent_sha1}}</a></td><td class="link"><a href="{{currpath}}?mode=commit;h={{commit.parent_sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.parent_sha1}};hp={{commit.sha1}}">commitdiff</a></td></tr>
+</table></div>
+<div class="page_body">
+{{commit.description}}
+</div>
+<div class="list_head">
+</div>
+<table cellspacing="0">
+<tr class="light">
+<td><a class="list" href="/?p=rubytagxx.git;a=blobdiff;h=779d6ea19ed419ebae3574e8032a23fc12d193b7;hp=0c43c760b6b456c98a491748f9132950556c2362;hb=52b3c0f6245d427689de7eee15673ba76c17706c;f=CMakeLists.txt">CMakeLists.txt</a></td>
+<td></td>
+<td class="link"><a href="/?p=rubytagxx.git;a=blob;h=779d6ea19ed419ebae3574e8032a23fc12d193b7;hb=52b3c0f6245d427689de7eee15673ba76c17706c;f=CMakeLists.txt">blob</a> | <a href="/?p=rubytagxx.git;a=blobdiff;h=779d6ea19ed419ebae3574e8032a23fc12d193b7;hp=0c43c760b6b456c98a491748f9132950556c2362;hb=52b3c0f6245d427689de7eee15673ba76c17706c;f=CMakeLists.txt">diff</a> | <a href="/?p=rubytagxx.git;a=history;h=52b3c0f6245d427689de7eee15673ba76c17706c;f=CMakeLists.txt">history</a>
+</td>
+</tr>
+</table>
