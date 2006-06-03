@@ -15,7 +15,40 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+begin
+  require 'rubygems'
+  require_gem 'diff-lcs', "1.1.1"
+  require 'diff/lcs/string'
+rescue LoadError
+  require 'diff/lcs'
+  require 'diff/lcs/string'
+end
+
+require 'text/format'
+
 module Gitarella
+class LCSDiff
+   attr_reader :difflines
+
+   def initialize()
+      @difflines = Array.new
+   end
+
+   def match(event)
+      @difflines << { "status" => "match", "line" => event.old_element }
+   end
+
+   def discard_b(event)
+      @difflines << { "status" => "added", "line" => event.new_element }
+   end
+
+   def discard_a(event)
+      @difflines << { "status" => "removed", "line" => event.old_element }
+   end
+end
+
+HTMLIZE = lambda { |line| line.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;') }
+
 class GitarellaCGI
    def tree_browse
       get_repo_id
@@ -42,11 +75,29 @@ class GitarellaCGI
          case @cgi["mode"]
             when "blobdiff"
                raise BinaryOperationInvalid if binary
+
+               tf = Text::Format.new
+               tf.tabstop = 4
+               preprocess = lambda { |line| tf.expand(line.chomp) }
+
+               @template_params["commit"] = @repo.commit(@commit_hash).to_hash
+               @template_params["old"] = Hash.new
+               @template_params["old"]["sha1"] = @cgi["hp"]
+               @template_params["old"]["data"] = @repo.file(@filepath, @cgi["hp"]).split("\n").map(&preprocess).map(&HTMLIZE)
+               @template_params["new"] = Hash.new
+               @template_params["new"]["sha1"] = @cgi["hn"]
+               @template_params["new"]["data"] = @repo.file(@filepath, @cgi["hn"]).split("\n").map(&preprocess).map(&HTMLIZE)
+
+               diff = LCSDiff.new
+               Diff::LCS.traverse_sequences(@template_params["old"]["data"], @template_params["new"]["data"], diff)
+               @template_params["difflines"] = diff.difflines
+
+               @content = parse_template("blobdiff")
             when "checkout"
                static_data(@template_params["file"]["data"])
             else
                static_data(@template_params["file"]["data"]) if binary
-               @template_params["file"]["lines"] = @template_params["file"]["data"].split("\n")
+               @template_params["file"]["lines"] = @template_params["file"]["data"].split("\n").map(&HTMLIZE)
                @content = parse_template("blob")
          end
       end

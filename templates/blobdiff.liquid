@@ -1,0 +1,28 @@
+<div class="page_nav">
+<a href="{{currpath}}?mode=summary">summary</a> | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit_hash}}">log</a> | <a href="{{currpath}}?mode=commit;h={{commit_hash}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/>
+<a href="{{currpath}}/?mode=blobdiff;style=plain;hn={{new.sha1};hp={{old.sha1}}">plain</a></div>
+<div>
+<a class="title" href="{{currpath}}?mode=commit;h={{commit_hash}}">{{commit.description}}</a>
+</div>
+<div class="page_path"><b>{{filepath}}</b></div>
+<div class="page_body">
+<div class="diff_info">blob:<a href="{{currpath}}?h={{old.sha1}}">{{old.sha1}}</a> -&gt; blob:<a href="{{currpath}}?h={{new.sha1}}">{{new.sha1}}</a></div>
+{% for line in difflines %}
+  <div class="pre 
+  {% if line.status == "removed" %}removed{% endif %}
+  {% if line.status == "added" %}added{% endif %}
+  ">{{ line.line }}</div>
+{% endfor %}
+<!--
+<div class="pre" style="color:#cc0000;">- - - CMakeLists.txt</div>
+<div class="pre" style="color:#008800;">+++ CMakeLists.txt</div>
+<div class="pre" style="color:#990099;">@@ -11,6 +11,7 @@ FIND_PACKAGE(TagLib REQUIRED)</div>
+<div class="pre"> </div>
+<div class="pre"> ADD_CUSTOM_COMMAND(</div>
+<div class="pre">         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/rubytag/rubytagpp.cpp</div>
+<div class="pre" style="color:#008800;">+                ${CMAKE_CURRENT_BINARY_DIR}/rubytag/rubytagpp.h</div>
+<div class="pre">         COMMAND ${RUBY_EXECUTABLE}</div>
+<div class="pre">         ARGS -I${GENERATOR_PATH} -C${CMAKE_CURRENT_BINARY_DIR}/rubytag</div>
+<div class="pre">                 ${GENERATOR_PATH}/generator.rb ${GENERATOR_PATH}/description.yml</div>
+-->
+</div>

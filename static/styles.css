@@ -56,3 +56,13 @@ span.tag {
 	padding:0px 4px; font-size:10px; font-weight:normal;
 	background-color:#ffffaa; border:1px solid; border-color:#ffffcc #ffee00 #ffee00 #ffffcc;
 }
+
+div.removed {
+	color: red;
+	border-left: 3px solid red;
+}
+
+div.added {
+	color: green;
+	border-left: 3px solid green;
+}

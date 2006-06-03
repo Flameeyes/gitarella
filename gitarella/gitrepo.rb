@@ -62,7 +62,7 @@ class GITRepo
       return $memcache["gitcommit-#{sha1}"]
    end
 
-   def list(path = ".")
+   def list(path = ".", sha1 = sha1_head)
       return $memcache["git-list_#{commit.tree}_#{path}"] \
          if $memcache and $memcache["git-list_#{commit.tree}_#{path}"]
 
@@ -86,12 +86,17 @@ class GITRepo
       return files
    end
 
-   def file(path)
-      listing = list(path)[0]
-      return unless listing
-
+   def file(path, sha1 = nil)
       push_gitdir
-      gitproc = IO.popen("git-cat-file #{listing["type"]} #{listing["sha1"]}")
+
+      unless sha1
+         listing = list(path)[0]
+         return unless listing
+
+         gitproc = IO.popen("git-cat-file #{listing["type"]} #{listing["sha1"]}")
+      else
+         gitproc = IO.popen("git-cat-file blob #{sha1}")
+      end
       data = gitproc.read
 
       gitproc.close
