@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # Gitarella - web interface for GIT
 # Copyright (c) 2006 Diego "Flameeyes" Pettenò <flameeyes@gentoo.org>
+# CGI/FastCGI bridge inspired by gorg, Copyright (C) 2004-2006 Xavier Neys
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,8 +17,39 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-require "gitarella-base"
+require 'cgi'
+require 'fcgi'
 
-handle_request(CGI.new)
+# Overload read_from_cmdline to avoid crashing when request method
+# is neither GET/HEAD/POST. Default behaviour is to read input from
+# STDIN. Not really useful when your webserver gets OPTIONS / :-(
+class CGI
+   module QueryExtension
+      def read_from_cmdline
+         ''
+      end
+   end
+end
+
+
+require 'gitarella-base'
+
+STDERR.close
+
+#$stderr = File.new("/tmp/gitarella.log", "w")
+#$stderr.puts "Uhm"
+
+countReq = 0; t0 = Time.new
+# Process CGI requests sent by the fastCGI engine
+FCGI.each_cgi do |cgi|
+   countReq += 1
+   #$stderr.puts "Handling request.."
+   handle_request(cgi)
+   #$stderr.puts "Handled request.."
+
+   # Garbage Collect regularly to help keep memory
+   # footprint low enough without costing too much time.
+   GC.start if countReq%50==0
+end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;
