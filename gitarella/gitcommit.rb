@@ -76,6 +76,35 @@ class GITCommit
       @description.gsub("\n", "<br />")
    end
 
+   def changes(base = @parent)
+      return $memcache["gitcommit-changes-#{sha1}_#{base}"] \
+         if $memcache and $memcache["gitcommit-changes-#{sha1}_#{base}"]
+      changes = Array.new
+
+      @repo.push_gitdir
+      gitproc = IO.popen("git-diff-tree -r #{base} #{sha1}")
+
+      gitproc.each_line { |line|
+         change = Hash.new
+
+         line =~ /^:([0-7]{6}) ([0-7]{6}) ([0-9a-f]{40}) ([0-9a-f]{40}) ([A-Z]+) *(.*)$/
+         change["old_mode"] = $1
+         change["new_mode"] = $2
+         change["old_hash"] = $3
+         change["new_hash"] = $4
+         change["flags"] = $5
+         change["file"] = $6
+
+         changes << change
+      }
+
+      $stderr.puts changes.inspect
+
+      gitproc.close
+      $memcache["gitcommit-changes-#{sha1}_#{base}"] = changes if $memcache
+      return changes
+   end
+
    def to_hash
       return {
          "sha1" => @sha1, "tree" => @tree, "parent_sha1" => @parent,

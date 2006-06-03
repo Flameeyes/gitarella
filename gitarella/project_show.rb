@@ -32,6 +32,7 @@ class GitarellaCGI
 
          when "commit"
             @template_params["commit"] = @repo.commit(@commit_hash).to_hash
+            @template_params["commit"]["changes"] = @repo.commit(@commit_hash).changes
             @content = parse_template("project-commit")
 
          else # fallback
