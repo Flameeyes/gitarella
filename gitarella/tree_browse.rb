@@ -34,7 +34,7 @@ class GitarellaCGI
 
          @template_params["repopath"] = "/" + @filepath
          @template_params["files_list"] = @repo.list(@filepath + "/")
-         @content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(@template_params)
+         @content = parse_template("tree")
       else
          prev_element = ""
          @filepath.each { |element|
@@ -52,58 +52,11 @@ class GitarellaCGI
             raise StaticOutput
          else
             @template_params["file"]["lines"] = @template_params["file"]["data"].split("\n")
-            @content = Liquid::Template.parse( File.open("templates/blob.liquid").read ).render(@template_params)
+            @content = parse_template("blob")
          end
       end
    end
 end
 end
-
-#          repo_id = path[0]; path.delete_at(0)
-#          filepath = path.join('/')
-#
-#          unless repos.has_key?(repo_id)
-#             cgi.header({"status" => CGI::NOT_FOUND})
-#             return
-#          end
-#
-#          template_params["title"] = "gitarella - #{repo_id}"
-#          template_params["commit_hash"] = repos[repo_id].sha1_head
-#          template_params["commit_desc"] = repos[repo_id].commit.description
-#          template_params["path"] = Array.new
-#
-#          if repos[repo_id].list(filepath).empty?
-#             cgi.out({"status" => "NOT_FOUND"}) { "File not found" }
-#             return
-#          elsif repos[repo_id].list(filepath)[0]["type"] == "tree"
-#             prevelement = ""
-#             filepath.split("/").each { |element|
-#                template_params["path"] << { "path" => prevelement + "/" + element, "name" => element }
-#                prevelement = element
-#             }
-#
-#             template_params["repopath"] = "/" + filepath
-#             template_params["files_list"] = repos[repo_id].list(filepath + "/")
-#             content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(template_params)
-#          else
-#             prevelement = ""
-#             filepath.split("/").each { |element|
-#                template_params["path"] << { "path" => prevelement + "/" + element, "name" => element }
-#                prevelement = element
-#             }
-#
-#             template_params["file"] = repos[repo_id].list(filepath)[0]
-#             template_params["file"]["data"] = repos[repo_id].file(filepath)
-#             if cgi["mode"] == "checkout" or template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
-#                staticmime = FileMagic.new(FileMagic::MAGIC_MIME).buffer(template_params["file"]["data"])
-#
-#                cgi.out({ "content-type" => staticmime}) { template_params["file"]["data"] }
-#                return
-#             else
-#                template_params["file"]["lines"] = template_params["file"]["data"].split("\n")
-#                content = Liquid::Template.parse( File.open("templates/blob.liquid").read ).render(template_params)
-#             end
-#          end
-#       end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

@@ -24,14 +24,14 @@ class GitarellaCGI
       case mode
          when "summary"
             get_commits(:number => 15)
-            @content = Liquid::Template.parse( File.open("templates/project-summary.liquid").read ).render(@template_params)
+            @content = parse_template("project-summary")
 
          when "shortlog", "log"
             get_commits( @commit_hash, 30 )
-            @content = Liquid::Template.parse( File.open("templates/project-#{mode}.liquid").read ).render(@template_params)
+            @content = parse_template("project-" + mode)
 
          else # fallback
-            @content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(@template_params)
+            @content = parse_template(tree)
       end
    end
 

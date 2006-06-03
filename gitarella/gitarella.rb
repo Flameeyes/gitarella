@@ -73,7 +73,7 @@ module Gitarella
 
          @template_params["content"] = @content
          @cgi.out {
-            Liquid::Template.parse( File.open("templates/main.liquid").read ).render(@template_params)
+            parse_template("main")
          }
       end
 
@@ -89,7 +89,7 @@ module Gitarella
          @template_params["repositories"].sort! { |x, y| x[@template_params["sort"]] <=> y[@template_params["sort"]] }
 
          @template_params["title"] = "gitarella - browse projects"
-         @content = Liquid::Template.parse( File.open("templates/projects.liquid").read ).render(@template_params)
+         @content = parse_template("projects")
       end
 
       def static_file(path)
@@ -111,6 +111,10 @@ module Gitarella
          @template_params["commit_desc"] = @repo.commit(@commit_hash).description
          @template_params["files_list"] = @repo.list
          @template_params["repository"] = @repo.to_hash
+      end
+
+      def parse_template(name, params = @template_params)
+         Liquid::Template.parse( File.open("templates/#{name}.liquid").read ).render(params)
       end
    end
 
