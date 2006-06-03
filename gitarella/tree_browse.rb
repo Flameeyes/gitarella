@@ -23,6 +23,8 @@ class GitarellaCGI
       @filepath = @path.join('/')
       RepoFileNotFound(@repo_id, @filepath) if @repo.list(@filepath).empty?
 
+      @template_params["path"] = Array.new
+
       if @repo.list(@filepath)[0]["type"] == "tree"
          prev_element = ""
          @path.each { |element|
