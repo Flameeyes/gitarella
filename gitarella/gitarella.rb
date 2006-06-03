@@ -125,6 +125,8 @@ module Gitarella
          return
       rescue FileNotFound => err404
          cgi.out({"status" => CGI::HTTP_STATUS["NOT_FOUND"]}) { err404.message }
+      rescue Exception => error
+         cgi.out({"status" => CGI::HTTP_STATUS["SERVER_ERROR"]}) { error.message }
       end
    end
 end
