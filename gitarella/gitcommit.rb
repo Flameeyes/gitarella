@@ -87,7 +87,7 @@ class GITCommit
       gitproc.each_line { |line|
          change = Hash.new
 
-         line =~ /^:([0-7]{6}) ([0-7]{6}) ([0-9a-f]{40}) ([0-9a-f]{40}) ([A-Z]+) *(.*)$/
+         line =~ /^:([0-7]{6}) ([0-7]{6}) ([0-9a-f]{40}) ([0-9a-f]{40}) ([A-Z]+)[ \t]*(.*)$/
          change["old_mode"] = $1
          change["new_mode"] = $2
          change["old_hash"] = $3
