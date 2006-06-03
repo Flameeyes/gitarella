@@ -35,16 +35,11 @@ require 'gitarella/gitarella'
 
 STDERR.close
 
-#$stderr = File.new("/tmp/gitarella.log", "w")
-#$stderr.puts "Uhm"
-
 countReq = 0; t0 = Time.new
 # Process CGI requests sent by the fastCGI engine
 FCGI.each_cgi do |cgi|
    countReq += 1
-   #$stderr.puts "Handling request.."
    handle_request(cgi)
-   #$stderr.puts "Handled request.."
 
    # Garbage Collect regularly to help keep memory
    # footprint low enough without costing too much time.
