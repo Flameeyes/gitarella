@@ -24,37 +24,37 @@ class GitarellaCGI
       raise RepoFileNotFound.new(@repo_id, @filepath) if @repo.list(@filepath).empty?
 
       @template_params["path"] = Array.new
+      prev_element = ""
+      @path.each { |element|
+         @template_params["path"] << { "path" => prev_element + "/" + element, "name" => element }
+         prev_element = element
+      }
 
       if @repo.list(@filepath)[0]["type"] == "tree"
-         prev_element = ""
-         @path.each { |element|
-            @template_params["path"] << { "path" => prev_element + "/" + element, "name" => element }
-            prev_element = element
-         }
-
          @template_params["repopath"] = "/" + @filepath
          @template_params["files_list"] = @repo.list(@filepath + "/")
          @content = parse_template("tree")
       else
-         prev_element = ""
-         @filepath.each { |element|
-            @template_params["path"] << { "path" => prev_element + "/" + element, "name" => element }
-            prev_element = element
-         }
-
          @template_params["file"] = @repo.list(@filepath)[0]
          @template_params["file"]["data"] = @repo.file(@filepath)
+         binary = @template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
 
-         if @cgi["mode"] == "checkout" or @template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
-            staticmime = FileMagic.new(FileMagic::MAGIC_MIME).buffer(@template_params["file"]["data"])
-
-            @cgi.out({ "content-type" => staticmime}) { @template_params["file"]["data"] }
-            raise StaticOutput
-         else
-            @template_params["file"]["lines"] = @template_params["file"]["data"].split("\n")
-            @content = parse_template("blob")
+         case @cgi["mode"]
+            when "blobdiff"
+               raise BinaryOperationInvalid if binary
+            when "checkout"
+               static_data(@template_params["file"]["data"])
+            else
+               static_data(@template_params["file"]["data"]) if binary
+               @template_params["file"]["lines"] = @template_params["file"]["data"].split("\n")
+               @content = parse_template("blob")
          end
       end
+   end
+
+   def static_data(data)
+      @cgi.out({ "content-type" => FileMagic.new(FileMagic::MAGIC_MIME).buffer(data)}) { data }
+      raise StaticOutput
    end
 end
 end

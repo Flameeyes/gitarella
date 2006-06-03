@@ -47,6 +47,12 @@ class RepoFileNotFound < FileNotFound
    end
 end
 
+class BinaryOperationInvalid < Exception
+   def message
+      "Unable to perform the requested operation on a binary file."
+   end
+end
+
 end
 
 
