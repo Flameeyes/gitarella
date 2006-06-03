@@ -21,6 +21,7 @@ require "filemagic"
 require "liquid"
 require "pathname"
 
+require "gitarella/exceptions"
 require "gitarella/gitrepo"
 require "gitarella/gitutils"
 require "gitarella/project_show"
@@ -52,7 +53,7 @@ module Gitarella
 
       def initialize(cgi)
          @cgi = cgi
-         @path = cgi.path_info.split(/\/+/).delete_if { |x| x.empty? }
+         @path = cgi.path_info.split(/\/+/).delete_if { |x| x.empty? } if cgi.path_info
 
          # Rule out the static files immediately
          static_file(".#{cgi.path_info}") if @path[0] == "static"
@@ -100,18 +101,16 @@ module Gitarella
 
       def get_repo_id
          @repo_id = @path[0]; @path.delete_at(0)
-         return @cgi.out({"status" => CGI::HTTP_STATUS["NOT_FOUND"]}) { "Repository not found" } \
-            if not @@repos.has_key?(@repo_id)
+         raise RepositoryNotFound.new(@repo_id) unless @@repos.has_key?(@repo_id)
+         @repo = @@repos[@repo_id]
 
-         $stderr.puts @@repos[@repo_id].inspect
-         @commit_hash = (@cgi.has_key?("h") and not @cgi["h"].empty?) ? @cgi["h"] : @@repos[@repo_id].sha1_head
-         $stderr.puts @commit_hash
+         @commit_hash = (@cgi.has_key?("h") and not @cgi["h"].empty?) ? @cgi["h"] : @repo.sha1_head
 
          @template_params["title"] = "gitarella - #{@repo_id}"
          @template_params["commit_hash"] = @commit_hash
-         @template_params["commit_desc"] = @@repos[@repo_id].commit(@commit_hash).description
-         @template_params["files_list"] = @@repos[@repo_id].list
-         @template_params["repository"] = @@repos[@repo_id].to_hash
+         @template_params["commit_desc"] = @repo.commit(@commit_hash).description
+         @template_params["files_list"] = @repo.list
+         @template_params["repository"] = @repo.to_hash
       end
    end
 
@@ -120,6 +119,8 @@ module Gitarella
          GitarellaCGI.new(cgi)
       rescue StaticOutput # We served a static page for whatever reason, just exit
          return
+      rescue FileNotFound => err404
+         cgi.out({"status" => CGI::HTTP_STATUS["NOT_FOUND"]}) { err404.message }
       end
    end
 end

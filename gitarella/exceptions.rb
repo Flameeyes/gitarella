@@ -36,7 +36,7 @@ class RepositoryNotFound < FileNotFound
    end
 end
 
-class FileNotFound < FileNotFound
+class RepoFileNotFound < FileNotFound
    def initialize(repo, file)
       @repo_id = repo
       @file = file

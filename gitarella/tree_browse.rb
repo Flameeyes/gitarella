@@ -21,10 +21,9 @@ class GitarellaCGI
       get_repo_id
 
       @filepath = @path.join('/')
-      if @@repos[@repo_id].list(@filepath).empty?
-         @cgi.out({"status" => "NOT_FOUND"}) { "File not found" }
-         return
-      elsif @@repos[@repo_id].list(@filepath)[0]["type"] == "tree"
+      RepoFileNotFound(@repo_id, @filepath) if @repo.list(@filepath).empty?
+
+      if @repo.list(@filepath)[0]["type"] == "tree"
          prev_element = ""
          @path.each { |element|
             @template_params["path"] << { "path" => prev_element + "/" + element, "name" => element }
@@ -32,7 +31,7 @@ class GitarellaCGI
          }
 
          @template_params["repopath"] = "/" + @filepath
-         @template_params["files_list"] = @@repos[@repo_id].list(@filepath + "/")
+         @template_params["files_list"] = @repo.list(@filepath + "/")
          @content = Liquid::Template.parse( File.open("templates/tree.liquid").read ).render(@template_params)
       else
          prev_element = ""
@@ -41,13 +40,14 @@ class GitarellaCGI
             prev_element = element
          }
 
-         @template_params["file"] = @@repos[@repo_id].list(@filepath)[0]
-         @template_params["file"]["data"] = @@repos[@repo_id].file(@filepath)
+         @template_params["file"] = @repo.list(@filepath)[0]
+         @template_params["file"]["data"] = @repo.file(@filepath)
+
          if @cgi["mode"] == "checkout" or @template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
             staticmime = FileMagic.new(FileMagic::MAGIC_MIME).buffer(@template_params["file"]["data"])
 
             @cgi.out({ "content-type" => staticmime}) { @template_params["file"]["data"] }
-            return
+            raise StaticOutput
          else
             @template_params["file"]["lines"] = @template_params["file"]["data"].split("\n")
             @content = Liquid::Template.parse( File.open("templates/blob.liquid").read ).render(@template_params)
