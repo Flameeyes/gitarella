@@ -31,8 +31,7 @@ class CGI
    end
 end
 
-
-require 'gitarella-base'
+require 'gitarella/gitarella'
 
 STDERR.close
 

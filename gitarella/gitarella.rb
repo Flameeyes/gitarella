@@ -21,8 +21,8 @@ require "filemagic"
 require "liquid"
 require "pathname"
 
-require "gitrepo"
-require "gitutils"
+require "gitarella/gitrepo"
+require "gitarella/gitutils"
 
 $config = YAML::load(File.new("gitarella-config.yml").read)
 
