@@ -55,7 +55,7 @@ module Gitarella
          @path = cgi.path_info.split(/\/+/).delete_if { |x| x.empty? }
 
          # Rule out the static files immediately
-         return static_file(".#{cgi.path_info}") if @path[0] == "static"
+         static_file(".#{cgi.path_info}") if @path[0] == "static"
 
          @template_params = {
             "basepath" => cgi.script_name,
@@ -95,7 +95,7 @@ module Gitarella
             staticfile = File.open(path)
             staticmime = FileMagic.new(FileMagic::MAGIC_MIME|FileMagic::MAGIC_SYMLINK).file(path)
             @cgi.out({ "content-type" => staticmime}) { staticfile.read }
-            return nil
+            raise StaticOutput
       end
 
       def get_repo_id
@@ -116,7 +116,11 @@ module Gitarella
    end
 
    def handle(cgi)
-      GitarellaCGI.new(cgi)
+      begin
+         GitarellaCGI.new(cgi)
+      rescue StaticOutput # We served a static page for whatever reason, just exit
+         return
+      end
    end
 end
 
