@@ -24,7 +24,7 @@
 <tr class="light">
 <td><a class="list" href="{{currpath}}{{change.file}}?mode=blobdiff;hn={{change.new_hash}};hp={{change.old_hash}};h={{commit_hash}}">{{change.file}}</a></td>
 <td></td>
-<td class="link"><a href="{{currpath}}{{file.path}}?hn={{change.new_hash}};h={{commit_hash}}">blob</a> | <a href="{{currpath}}{{file.path}}?mode=blobdiff;hn={{change.new_hash}};hp={{change.old_hash}};h={{commit_hash}}">diff</a> | <a href="{{currpath}}{{file.path}}?mode=history;h={{commit_hash}}">history</a>
+<td class="link"><a href="{{currpath}}{{change.file}}?hn={{change.new_hash}};h={{commit_hash}}">blob</a> | <a href="{{currpath}}{{change.file}}?mode=blobdiff;hn={{change.new_hash}};hp={{change.old_hash}};h={{commit_hash}}">diff</a> | <a href="{{currpath}}{{change.file}}?mode=history;h={{commit_hash}}">history</a>
 </td>
 </tr>
 {% endfor %}
