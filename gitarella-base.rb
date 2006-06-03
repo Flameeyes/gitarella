@@ -34,7 +34,6 @@ if $config["memcache-servers"] and not $config["memcache-servers"].empty?
 end
 
 def handle_request(cgi)
-   $stderr.puts cgi.inspect
    path = cgi.path_info.split(/\/+/).delete_if { |x| x.empty? }
 
    # Rule out the static files immediately
