@@ -21,7 +21,7 @@ class GitarellaCGI
       get_repo_id
 
       @filepath = @path.join('/')
-      RepoFileNotFound(@repo_id, @filepath) if @repo.list(@filepath).empty?
+      raise RepoFileNotFound.new(@repo_id, @filepath) if @repo.list(@filepath).empty?
 
       @template_params["path"] = Array.new
 
