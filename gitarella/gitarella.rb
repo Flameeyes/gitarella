@@ -60,7 +60,7 @@ module Gitarella
 
          @template_params = {
             "basepath" => cgi.script_name,
-            "currpath" => cgi.script_name + cgi.path_info
+            "currpath" => cgi.script_name + cgi.path_info + "/"
          }
 
          @content = ""
