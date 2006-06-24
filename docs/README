@@ -1,0 +1,18 @@
+Gitarella born as a replacement for gitweb, as it wasn't providing something I
+was looking for: direct URLs pointing to files in the repository.
+
+The decision to make it a Ruby webapp was due to my passion for Ruby and the
+availability of a lot of tools to write Web Applications, like CGI and FastCGI
+libraries, and HTML template libraries and so on.
+
+The current code, while not as evolved as gitweb's, can do basic browsing of the
+repositories' tree and handle diff view of the changesets.
+
+To be able to run gitarella you need:
+
+- a webserver able to handle CGI or FastCGI requests (tested and developed using
+lighttpd);
+- Ruby version 1.8;
+- for FastCGI support, ruby-fcgi extension;
+- for memcached backend, Ruby-MemCache extension;
+- diff-lcs extensions, mandatory for diff viewing; TODO, make this optional;
