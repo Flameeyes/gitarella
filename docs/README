@@ -11,8 +11,12 @@ repositories' tree and handle diff view of the changesets.
 To be able to run gitarella you need:
 
 - a webserver able to handle CGI or FastCGI requests (tested and developed using
-lighttpd);
+lighttpd, but Apache should work just as fine);
 - Ruby version 1.8;
-- for FastCGI support, ruby-fcgi extension;
-- for memcached backend, Ruby-MemCache extension;
-- diff-lcs extensions, mandatory for diff viewing; TODO, make this optional;
+- for FastCGI support, ruby-fcgi extension
+  ( http://raa.ruby-lang.org/list.rhtml?name=fcgi );
+- for memcached backend, Ruby-MemCache extension
+  ( http://www.deveiate.org/projects/RMemCache/ );
+- diff-lcs extensions, mandatory for diff viewing
+  ( http://raa.ruby-lang.org/project/diff-lcs ); TODO, make this optional;
+
