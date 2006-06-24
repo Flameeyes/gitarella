@@ -1,0 +1,3 @@
+- Add support for different diff schemes, make diff-lcs optional.
+- Add support for tag viewing.
+- Add support for SCGI.
