@@ -20,3 +20,12 @@ lighttpd, but Apache should work just as fine);
 - diff-lcs extensions, mandatory for diff viewing
   ( http://raa.ruby-lang.org/project/diff-lcs ); TODO, make this optional;
 
+Compared to gitweb, Gitarella tries to focus more on limiting the disk I/O when
+reading almost-static data. This is achieved through the optional memcached
+support, that will keep cached in memory all the data read for repositories,
+commits and tags.
+
+This can be done safely by using the SHA1 of the objects to memorize them in
+the cache: as the objects are immutables, the cache can be maintained
+indefinitely. This reduces a lot the time required for reading the data through
+the git commands and for parsing it into a Ruby-usable object.
