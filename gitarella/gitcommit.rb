@@ -22,10 +22,14 @@ class GITCommit
    def initialize(repo, sha1)
       @repo = repo
       @sha1 = sha1
+      $stderr.puts "GITCommit:initialize(#{repo}, #{sha1})"
+
       repo.push_gitdir
       gitproc = IO.popen("git-rev-list --header --parents --max-count=1 #{@sha1}")
       data = gitproc.read.split("\n")
       gitproc.close
+
+      raise CommitNotFound.new(@repo, @sha1) if data.empty?
 
       $stderr.puts data.inspect
 

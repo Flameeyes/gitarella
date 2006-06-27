@@ -47,6 +47,17 @@ class RepoFileNotFound < FileNotFound
    end
 end
 
+class CommitNotFound < FileNotFound
+   def initialize(repo, commit)
+      @repo_id = repo.is_a?(GITRepo) ? repo.id : repo
+      @commit = commit
+   end
+
+   def message
+      "Unable to find commit with SHA1 '#{@commit}' in repository #{@repo_id}"
+   end
+end
+
 class BinaryOperationInvalid < Exception
    def message
       "Unable to perform the requested operation on a binary file."
