@@ -23,11 +23,11 @@ class GitarellaCGI
       mode = @cgi.has_key?("mode") ? @cgi["mode"] : "tree"
       case mode
          when "summary"
-            get_commits(:number => 15)
+            get_commits(15)
             @content = parse_template("project-summary")
 
          when "shortlog", "log"
-            get_commits( @commit_hash, 30 )
+            get_commits(30, @commit_hash)
             @content = parse_template("project-" + mode)
 
          when "commit"
@@ -40,7 +40,7 @@ class GitarellaCGI
       end
    end
 
-   def get_commits(from = @commit_hash, number = 10)
+   def get_commits(number = 10, from = @commit_hash)
       @template_params["commits"] = Array.new
 
       commit = @@repos[@repo_id].commit(from)
