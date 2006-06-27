@@ -28,7 +28,7 @@ end
 
 class RepositoryNotFound < FileNotFound
    def initialize(id)
-      @repo_id = id
+      @repo_id = repo.is_a?(GITRepo) ? repo.id : repo
    end
 
    def message
@@ -38,7 +38,7 @@ end
 
 class RepoFileNotFound < FileNotFound
    def initialize(repo, file)
-      @repo_id = repo
+      @repo_id = repo.is_a?(GITRepo) ? repo.id : repo
       @file = file
    end
 
