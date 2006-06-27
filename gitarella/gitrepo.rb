@@ -53,6 +53,7 @@ class GITRepo
    end
 
    def commit(sha1 = sha1_head)
+      $stderr.puts "GITRepo.commit(#{sha1})"
       return nil if not sha1 or sha1.empty?
       return GITCommit.new(self, sha1) unless $memcache
 

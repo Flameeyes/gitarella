@@ -124,7 +124,7 @@ module Gitarella
       rescue StaticOutput # We served a static page for whatever reason, just exit
          return
       rescue FileNotFound => err404
-         cgi.out({"status" => CGI::HTTP_STATUS["NOT_FOUND"]}) { err404.message }
+         cgi.out({"status" => CGI::HTTP_STATUS["NOT_FOUND"]}) { err404.message + err404.backtrace.inspect }
       rescue Exception => error
          cgi.out({"status" => CGI::HTTP_STATUS["SERVER_ERROR"]}) { error.to_s + error.backtrace.inspect}
          raise
