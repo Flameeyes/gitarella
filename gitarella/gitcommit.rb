@@ -77,7 +77,7 @@ class GITCommit
    end
 
    def description
-      @description.gsub("\n", "<br />")
+      @description.gsub("\n", "<br />") if @description
    end
 
    def changes(base = @parent)
