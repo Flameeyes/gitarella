@@ -104,7 +104,7 @@ module Gitarella
          raise RepositoryNotFound.new(@repo_id) unless @@repos.has_key?(@repo_id)
          @repo = @@repos[@repo_id]
 
-         @commit_hash = (@cgi.has_key?("h") and not @cgi["h"].empty?) ? @cgi["h"] : @repo.sha1_head
+         @commit_hash = (@cgi.has_key?("h") and not @cgi["h"].empty?) ? @cgi["h"] : @repo.head
 
          @template_params["title"] = "gitarella - #{@repo_id}"
          @template_params["commit_hash"] = @commit_hash

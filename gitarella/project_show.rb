@@ -52,7 +52,7 @@ class GitarellaCGI
          count = count+1
       end
 
-      @template_params["prev_commits"] = ( from != @@repos[@repo_id].sha1_head ) ? @@repos[@repo_id].commit(from).parent.sha1 : false
+      @template_params["prev_commits"] = ( from != @@repos[@repo_id].head ) ? @@repos[@repo_id].commit(from).parent.sha1 : false
       @template_params["more_commits"] = commit
    end
 end

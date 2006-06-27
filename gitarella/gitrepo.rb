@@ -18,7 +18,7 @@
 require 'gitarella/gitcommit'
 
 class GITRepo
-   attr_accessor :path, :description, :owner, :valid, :id
+   attr_accessor :path, :description, :owner, :valid, :id, :head
 
    def initialize(array)
       @id = array["id"]
@@ -34,6 +34,8 @@ class GITRepo
       @description = descfile.read if not @description and descfile.exist?
 
       @owner = "n/a" unless @owner
+
+      @head = sha1_head
    end
 
    def push_gitdir
@@ -42,17 +44,16 @@ class GITRepo
 
    def sha1_head
       return unless @valid
-      return @sha1_head_cache if @sha1_head_cache
 
       push_gitdir
       gitproc = IO.popen("git-rev-parse --verify HEAD")
-      @sha1_head_cache = gitproc.read.chomp
+      head = gitproc.read.chomp
       gitproc.close
 
-      return @sha1_head_cache
+      return head
    end
 
-   def commit(sha1 = sha1_head)
+   def commit(sha1 = @head)
       $stderr.puts "GITRepo.commit(#{sha1})"
       return nil if not sha1 or sha1.empty?
       return GITCommit.new(self, sha1) unless $memcache
@@ -63,7 +64,7 @@ class GITRepo
       return $memcache["gitcommit-#{sha1}"]
    end
 
-   def list(path = ".", sha1 = sha1_head)
+   def list(path = ".", sha1 = @head)
       return $memcache["git-list_#{commit.tree}_#{path}"] \
          if $memcache and $memcache["git-list_#{commit.tree}_#{path}"]
 
