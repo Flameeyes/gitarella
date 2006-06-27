@@ -10,4 +10,6 @@ rm -rf "gitarella-${version}"
 mkdir "gitarella-${version}"
 git-ls-files | xargs tar cf - | tar xf - -C "gitarella-${version}"
 
+cg-log -f > "gitarella-${version}"/docs/ChangeLog
+
 tar -jcf "gitarella-${version}.tar.bz2" "gitarella-${version}"
