@@ -58,12 +58,7 @@ class GITRepo
    def commit(sha1 = @head)
       $stderr.puts "GITRepo.commit(#{sha1})"
       return nil if not sha1 or sha1.empty?
-      return GITCommit.new(self, sha1) unless $memcache
-
-      $memcache["gitcommit-#{sha1}"] = GITCommit.new(self, sha1) \
-         unless $memcache["gitcommit-#{sha1}"]
-
-      return $memcache["gitcommit-#{sha1}"]
+      return GITCommit.new(self, sha1)
    end
 
    def list(path = ".", sha1 = @head)

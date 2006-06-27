@@ -20,9 +20,14 @@ class GITCommit
       :sha1
 
    def initialize(repo, sha1)
+      if $memcache["gitcommit-#{sha1}"]
+         $stderr.puts "Getting this from cache:\n\t" + $memcache["gitcommit-#{sha1}"].inspect
+         return $memcache["gitcommit-#{sha1}"]
+      end
+
+      $stderr.puts "GITCommit:initialize(#{repo}, #{sha1})"
       @repo = repo
       @sha1 = sha1
-      $stderr.puts "GITCommit:initialize(#{repo}, #{sha1})"
 
       repo.push_gitdir
       gitproc = IO.popen("git-rev-list --header --parents --max-count=1 #{@sha1}")
@@ -56,6 +61,8 @@ class GITCommit
       # commit_tz = $4 # TODO Implement timezone diff
 
       @description = data[3..data.size].join("\n")
+
+      $memcache["gitcommit-#{sha1}"] = self
    end
 
    def parent
