@@ -43,15 +43,17 @@ class GITCommit
          return nil unless verify_report == "#{@sha1}"
       end
 
-      data[0] =~ /^author (.*) ([0-9]+) (\+[0-9]{4})$/
+      data[0] =~ /^author (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
       @author_name = $1
       @author_time = Time.at($2.to_i)
-      # author_tz = $3 # TODO Implement timezone diff
+      @author_mail = $3
+      # author_tz = $4 # TODO Implement timezone diff
 
-      data[1] =~ /^committer (.*) ([0-9]+) (\+[0-9]{4})$/
+      data[1] =~ /^committer (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
       @commit_name = $1
       @commit_time = Time.at($2.to_i)
-      # committer_tz = $3 # TODO Implement timezone diff
+      @commit_mail = $3
+      # commit_tz = $4 # TODO Implement timezone diff
 
       @description = data[3..data.size].join("\n")
    end
