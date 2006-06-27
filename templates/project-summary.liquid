@@ -28,8 +28,8 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 {% for head in repository.heads %}
 <tr class="light">
 <td><i>{{ head.last_change_str }}</i></td>
-<td><a class="list" href="{{currpath}}?mode=shortlog;h={{head.name}}"><b>{{head.name}}</b></a></td>
-<td class="link"><a href="{{currpath}}?mode=shortlog;h={{head.name}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{head.name}}">log</a></td>
+<td><a class="list" href="{{currpath}}?mode=shortlog;h={{head.sha1}}"><b>{{head.name}}</b></a></td>
+<td class="link"><a href="{{currpath}}?mode=shortlog;h={{head.sha1}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{head.sha1}}">log</a></td>
 </tr>
 {% endfor %}
 </table>
