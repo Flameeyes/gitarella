@@ -22,8 +22,9 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 {% if more_commits %}
 <tr class="light"><td><a href="{{currpath}}?mode=shortlog">...</a></td></tr>
 {% endif %}
-</table><div>
-<a class="title" href="{{currpath}}?mode=tags">tags</a></div>
+</table>
+
+<div><a class="title" href="{{currpath}}?mode=tags">tags</a></div>
 <table cellspacing="0">
 {% for tag in repository.tags %}
 <tr class="light">
@@ -32,12 +33,15 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 <td><a class="list" href="{{currpath}}?mode=tag;htag={{tag.sha1}}">{{tag.description}}</a></td>
 <td class="link">
   <a href="{{currpath}}?mode=tag;htag={{tag.sha1}}">shortlog</a> |
-  <a href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">commit</a></td> |
-  <a href="{{currpath}}?mode=shortlog;h={{tag.commit.sha1}}">shortlog</a></td> |
-  <a href="{{currpath}}?mode=log;h={{tag.commit.sha1}}">log</a></td>
+  <a href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">commit</a> |
+  <a href="{{currpath}}?mode=shortlog;h={{tag.commit.sha1}}">shortlog</a> |
+  <a href="{{currpath}}?mode=log;h={{tag.commit.sha1}}">log</a>
+</td>
 </tr>
 {% endfor %}
-<a class="title" href="{{currpath}}?mode=heads">heads</a></div>
+</table>
+
+<div><a class="title" href="{{currpath}}?mode=heads">heads</a></div>
 <table cellspacing="0">
 {% for head in repository.heads %}
 <tr class="light">

@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require 'gitarella/gitcommit'
+require 'gitarella/gittag'
 
 class GITRepo
    attr_accessor :path, :description, :owner, :valid, :id, :head
@@ -35,18 +36,19 @@ class GITRepo
 
       @owner = "n/a" unless @owner
 
-      @head = sha1_head
+      @head = sha1_tag("HEAD")
    end
 
    def push_gitdir
       ENV["GIT_DIR"] = "#{path}"
    end
 
-   def sha1_head
+   def sha1_tag(tag)
       return unless @valid
+      return unless tag
 
       push_gitdir
-      gitproc = IO.popen("git-rev-parse --verify HEAD")
+      gitproc = IO.popen("git-rev-parse --verify #{tag}")
       head = gitproc.read.chomp
       gitproc.close
 
@@ -124,6 +126,23 @@ class GITRepo
       return heads
    end
 
+   def tags
+      return @cached_tags if @cached_tags
+
+      push_gitdir
+
+      gitproc = IO.popen("git-tag -l")
+
+      @cached_tags = Array.new
+      gitproc.read.split("\n").each { |tag|
+         @cached_tags << GITTag.new(self, tag)
+      }
+
+      gitproc.close
+
+      return @cached_tags
+   end
+
    def last_change
       return Time.now if not commit
 
@@ -146,17 +165,22 @@ class GITRepo
       return unless @valid
 
       headshashes = Array.new
-      heads.each_pair{ |name, head|
+      heads.each_pair { |name, head|
          headshashes << {
             "name" => name, "sha1" => head,
             "last_change_str" => age_string( Time.now - commit(head).commit_time )
             }
       }
 
+      tagshashes = Array.new
+      tags.each { |tag|
+         tagshashes << tag.to_hash
+      }
+
       { "id" => @id, "path" => @path, "description" => @description,
         "owner" => @owner, "last_change" => last_change,
         "last_change_age" => last_change_age, "last_change_str" => last_change_str,
-        "heads" => headshashes }
+        "heads" => headshashes, "tags" => tagshashes }
    end
 end
 
