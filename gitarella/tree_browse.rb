@@ -69,7 +69,7 @@ class GitarellaCGI
          @content = parse_template("tree")
       else
          @template_params["file"] = @repo.list(@filepath)[0]
-         @template_params["file"]["data"] = @repo.file(@filepath)
+         @template_params["file"]["data"] = @repo.file(@filepath, @cgi["blobh"])
          binary = @template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
 
          case @cgi["mode"]

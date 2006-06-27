@@ -87,9 +87,10 @@ class GITRepo
    end
 
    def file(path, sha1 = nil)
+      $stderr.puts "GITRepo.file(#{path   }, #{sha1.inspect})"
       push_gitdir
 
-      unless sha1
+      if not sha1 or sha1.empty?
          listing = list(path)[0]
          return unless listing
 
