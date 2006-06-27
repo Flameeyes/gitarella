@@ -25,7 +25,7 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 </table><div>
 <a class="title" href="{{currpath}}?mode=heads">heads</a></div>
 <table cellspacing="0">
-{% for head in heads %}
+{% for head in repository.heads %}
 <tr class="light">
 <td><i>{{ head.last_change_str }}</i></td>
 <td><a class="list" href="{{currpath}}?mode=shortlog;h={{head.name}}"><b>{{head.name}}</b></a></td>
