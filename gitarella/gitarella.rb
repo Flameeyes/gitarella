@@ -34,6 +34,12 @@ $memcache = nil
 if $config["memcache-servers"] and not $config["memcache-servers"].empty?
    require "memcache"
    $memcache = MemCache::new($config["memcache-servers"], :namespace => 'gitarella', :compression => 'true')
+   begin
+      $memcache["gitarella-test"] = true
+   rescue MemCache::MemCacheError
+      $stderr.puts "Gitarella: memcache configured but no server available."
+      $memcache = nil
+   end
 end
 
 module Gitarella

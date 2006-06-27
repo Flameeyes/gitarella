@@ -20,10 +20,7 @@ class GITCommit
       :sha1
 
    def initialize(repo, sha1)
-      if $memcache["gitcommit-#{sha1}"]
-         $stderr.puts "Getting this from cache:\n\t" + $memcache["gitcommit-#{sha1}"].inspect
-         return $memcache["gitcommit-#{sha1}"]
-      end
+      return $memcache["gitcommit-#{sha1}"] if $memcache and $memcache["gitcommit-#{sha1}"]
 
       $stderr.puts "GITCommit:initialize(#{repo}, #{sha1})"
       @repo = repo
@@ -50,19 +47,19 @@ class GITCommit
 
       data[0] =~ /^author (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
       @author_name = $1
-      @author_time = Time.at($2.to_i)
-      @author_mail = $3
+      @author_mail = $2
+      @author_time = Time.at($3.to_i)
       # author_tz = $4 # TODO Implement timezone diff
 
       data[1] =~ /^committer (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
       @commit_name = $1
-      @commit_time = Time.at($2.to_i)
-      @commit_mail = $3
+      @commit_mail = $2
+      @commit_time = Time.at($3.to_i)
       # commit_tz = $4 # TODO Implement timezone diff
 
       @description = data[3..data.size].join("\n")
 
-      $memcache["gitcommit-#{sha1}"] = self
+      $memcache["gitcommit-#{sha1}"] = self if $memcache
    end
 
    def parent

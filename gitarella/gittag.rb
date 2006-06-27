@@ -39,8 +39,8 @@ class GITTag
       @name = $1
       data[3] =~ /^tagger (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
       @tagger_name = $1
-      @tagger_time = Time.at($2.to_i)
-      @tagger_mail = $3
+      @tagger_mail = $2
+      @tagger_time = Time.at($3.to_i)
       # tagger_tz = $4 # TODO Implement timezone diff
 
       data = data.slice(data.index("")+1, data.size - data.index(""))
