@@ -18,10 +18,20 @@
 require 'gitarella/gitcommit'
 
 class GITTag
+   def GITCommit.get(repo, sha1)
+      return $memcache["gittag-#{sha1}"] if $memcache and $memcache["gittag-#{sha1}"]
+
+      ret = GITCommit.new(repo, sha1)
+
+      $memcache["gittag-#{sha1}"] = ret if $memcache
+
+      return ret
+   end
+
    def initialize(repo, sha1)
+      $stderr.puts "GITTag:initialize(#{repo}, #{sha1})"
       @repo = repo
       @sha1 = sha1
-      $stderr.puts "GITTag:initialize(#{repo}, #{sha1})"
 
       repo.push_gitdir
       gitproc = IO.popen("git-cat-file tag #{sha1}")
@@ -33,7 +43,7 @@ class GITTag
       $stderr.puts data.inspect
 
       data[0] =~ /^object ([a-f0-9]+)$/
-      @commit = GITCommit.new(@repo, $1)
+      @commit = GITCommit.get(@repo, $1)
       raise "ouch, non commit tag?" unless data[1] == "type commit"
       data[2] =~ /^tag (.*)$/
       @name = $1

@@ -19,9 +19,17 @@ class GITCommit
    attr_accessor :author_name, :author_time, :commit_name, :commit_time, :tree,
       :sha1
 
-   def initialize(repo, sha1)
+   def GITCommit.get(repo, sha1)
       return $memcache["gitcommit-#{sha1}"] if $memcache and $memcache["gitcommit-#{sha1}"]
 
+      ret = GITCommit.new(repo, sha1)
+
+      $memcache["gitcommit-#{sha1}"] = ret if $memcache
+
+      return ret
+   end
+
+   def initialize(repo, sha1)
       $stderr.puts "GITCommit:initialize(#{repo}, #{sha1})"
       @repo = repo
       @sha1 = sha1
@@ -59,7 +67,7 @@ class GITCommit
 
       @description = data[3..data.size].join("\n")
 
-      $memcache["gitcommit-#{sha1}"] = self if $memcache
+      $stderr.puts "Going to cache with times #{@author_time}, #{@commit_time}"
    end
 
    def parent

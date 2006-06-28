@@ -58,7 +58,9 @@ class GITRepo
    def commit(sha1 = @head)
       $stderr.puts "GITRepo.commit(#{sha1})"
       return nil if not sha1 or sha1.empty?
-      return GITCommit.new(self, sha1)
+      ret = GITCommit.get(self, sha1)
+      $stderr.puts ret
+      return ret
    end
 
    def list(path = ".", sha1 = @head)
