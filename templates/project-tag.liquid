@@ -1,22 +1,22 @@
 <div class="page_nav">
 summary |
-<a href="{{currpath}}?mode=shortlog;h={{tag.commit.hash}}">shortlog</a> |
-<a href="{{currpath}}?mode=log;h={{tag.commit.hash}}">log</a> |
-<a href="{{currpath}}?mode=commit;h={{tag.commit.hash}}">commit</a> |
-<a href="{{currpath}}?mode=commitdiff;h={{tag.commit.hash}}">commitdiff</a> |
-<a href="{{currpath}}?mode=tree;hb={{tag.commit.hash}}">tree</a>
+<a href="{{currpath}}?mode=shortlog;h={{tag.commit.sha1}}">shortlog</a> |
+<a href="{{currpath}}?mode=log;h={{tag.commit.sha1}}">log</a> |
+<a href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">commit</a> |
+<a href="{{currpath}}?mode=commitdiff;h={{tag.commit.sha1}}">commitdiff</a> |
+<a href="{{currpath}}?mode=tree;hb={{tag.commit.sha1}}">tree</a>
 <br/><br/>
 </div>
 
 <div>
-<a class="title" href="{{currpath}}?mode=commit;h={{tag.commit.hash}}">{{tag.name}}</a>
+<a class="title" href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">{{tag.name}}</a>
 </div>
 <div class="title_text">
 <table cellspacing="0">
 <tr>
 <td>object</td>
-<td><a class="list" href="{{currpath}}?mode=commit;h={{tag.commit.hash}}">{{tag.commit.hash}}</a></td>
-<td class="link"><a href="{{currpath}}?mode=commit;h={{tag.commit.hash}}">commit</a></td>
+<td><a class="list" href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">{{tag.commit.sha1}}</a></td>
+<td class="link"><a href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">commit</a></td>
 </tr>
 <tr><td>author</td><td>{{tag.tagger_name}} &lt;{{tag.tagger_mail}}&gt;</td></tr>
 <tr><td></td><td>{{tag.tagger_date_str}}</td></tr>
