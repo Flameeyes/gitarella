@@ -48,26 +48,26 @@ class GITCommit
       if data[0] =~ /^parent.*/
          @parent = data[0].split[1].chomp; data.delete_at(0)
          return nil unless verify_report == "#{@sha1} #{@parent}"
+         # TODO Throw exception here
       else
          @parent = nil
          return nil unless verify_report == "#{@sha1}"
+         # TODO Throw exception here
       end
 
       data[0] =~ /^author (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
       @author_name = $1
       @author_mail = $2
-      @author_time = Time.at($3.to_i)
+      @author_time = $3.to_i
       # author_tz = $4 # TODO Implement timezone diff
 
       data[1] =~ /^committer (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
       @commit_name = $1
       @commit_mail = $2
-      @commit_time = Time.at($3.to_i)
+      @commit_time = $3.to_i
       # commit_tz = $4 # TODO Implement timezone diff
 
       @description = data[3..data.size].join("\n")
-
-      $stderr.puts "Going to cache with times #{@author_time}, #{@commit_time}"
    end
 
    def parent
@@ -75,15 +75,16 @@ class GITCommit
    end
 
    def commit_date_age
-      age_string( Time.now - commit_time )
+      age_string( Time.now - @commit_time )
    end
 
    def commit_date_str
-      Time.at(commit_time).to_s
+      Time.at(@commit_time).to_s
    end
 
    def author_date_str
-      Time.at(author_time).to_s
+      $stderr.puts @author_time
+      Time.at(@author_time).to_s
    end
 
    def short_description(size = 80)

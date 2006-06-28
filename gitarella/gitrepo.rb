@@ -165,7 +165,7 @@ class GITRepo
       heads.each_pair { |name, head|
          headshashes << {
             "name" => name, "sha1" => head,
-            "last_change_str" => age_string( Time.now - commit(head).commit_time )
+            "last_change_str" => commit(head).commit_date_age
             }
       }
 

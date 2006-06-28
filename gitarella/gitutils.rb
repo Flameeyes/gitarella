@@ -18,6 +18,7 @@
 
 # age_string function took from gitweb
 def age_string(age)
+   age = age.to_i
    if age > 60*60*24*365*2
       return "#{(age/(60*60*24*365)).to_i} years ago"
    elsif age > 60*60*24*(365/12)*2
