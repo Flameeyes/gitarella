@@ -132,7 +132,7 @@ class GITRepo
 
       @cached_tags = Array.new
       gitproc.read.split("\n").each { |tag|
-         @cached_tags << GITTag.new(self, tag)
+         @cached_tags << GITTag.get(self, tag)
       }
 
       gitproc.close
