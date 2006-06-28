@@ -177,7 +177,7 @@ class GITRepo
       { "id" => @id, "path" => @path, "description" => @description,
         "owner" => @owner, "last_change" => last_change,
         "last_change_age" => last_change_age, "last_change_str" => last_change_str,
-        "heads" => headshashes, "tags" => tagshashes }
+        "heads" => headshashes, "tags" => tagshashes, "head" => commit.to_hash }
    end
 end
 

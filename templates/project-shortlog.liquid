@@ -3,6 +3,11 @@
 <!-- It's not funny to put all in one page... but leave it here for now :P
 HEAD &sdot; prev &sdot; <a title="Alt-n" accesskey="n" href="/?p=rubytagxx.git;a=shortlog;h=52b3c0f6245d427689de7eee15673ba76c17706c;pg=1">next</a><br/>
 -->
+{% if commit_hash != repository.head.sha1 %}
+<a href="{{currpath}}?mode=shortlog">HEAD</a>
+{% else %}
+HEAD
+{% endif %}
 </div>
 <div>
 <a class="title" href="{{currpath}}?mode=summary">&nbsp;</a></div>
