@@ -83,7 +83,6 @@ class GITCommit
    end
 
    def author_date_str
-      $stderr.puts @author_time
       Time.at(@author_time).to_s
    end
 
