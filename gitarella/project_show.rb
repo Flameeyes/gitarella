@@ -35,6 +35,10 @@ class GitarellaCGI
             @template_params["commit"]["changes"] = @repo.commit(@commit_hash).changes
             @content = parse_template("project-commit")
 
+         when "tag"
+            @template_params["tag"] = GITTag.get(@repo, @cgi["htag"]).to_hash
+            @content = parse_template("project-tag")
+
          else # fallback
             @content = parse_template("tree")
       end

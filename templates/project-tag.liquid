@@ -1,0 +1,30 @@
+<div class="page_nav">
+summary |
+<a href="{{currpath}}?mode=shortlog;h={{tag.commit.hash}}">shortlog</a> |
+<a href="{{currpath}}?mode=log;h={{tag.commit.hash}}">log</a> |
+<a href="{{currpath}}?mode=commit;h={{tag.commit.hash}}">commit</a> |
+<a href="{{currpath}}?mode=commitdiff;h={{tag.commit.hash}}">commitdiff</a> |
+<a href="{{currpath}}?mode=tree;hb={{tag.commit.hash}}">tree</a>
+<br/><br/>
+</div>
+
+<div>
+<a class="title" href="{{currpath}}?mode=commit;h={{tag.commit.hash}}">{{tag.name}}</a>
+</div>
+<div class="title_text">
+<table cellspacing="0">
+<tr>
+<td>object</td>
+<td><a class="list" href="{{currpath}}?mode=commit;h={{tag.commit.hash}}">{{currpath}}?mode=commit;h={{tag.commit.hash}}</a></td>
+<td class="link"><a href="{{currpath}}?mode=commit;h={{tag.commit.hash}}">commit</a></td>
+</tr>
+<tr><td>author</td><td>{{tag.tagger_name}} &lt;{{tag.tagger_mail}}&gt;</td></tr>
+<tr><td></td><td>{{tag.tagger_date_str}}s</td></tr>
+</table>
+
+</div>
+<div class="page_body">
+{{ tag.description | nl2br }}
+<br />
+{{ tag.gpg_signature | nl2br }}
+</div>
