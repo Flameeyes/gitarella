@@ -18,7 +18,7 @@
 require 'gitarella/gitcommit'
 
 class GITTag
-   def GITCommit.get(repo, sha1)
+   def GITTag.get(repo, sha1)
       return $memcache["gittag-#{sha1}"] if $memcache and $memcache["gittag-#{sha1}"]
 
       ret = GITCommit.new(repo, sha1)
@@ -70,6 +70,8 @@ class GITTag
 
    def to_hash
       { "sha1" => @sha1, "name" => @name, "description" => @description,
+        "gpg_signature" => @gpg_signature, "tagger_name" => @tagger_name,
+        "tagger_mail" => @tagger_mail, "tagger_time" => @tagger_time,
         "commit" => @commit.to_hash }
    end
 end
