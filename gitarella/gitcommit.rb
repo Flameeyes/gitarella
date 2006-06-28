@@ -128,7 +128,9 @@ class GITCommit
          "sha1" => @sha1, "tree" => @tree, "parent_sha1" => @parent,
          "author_name" => @author_name, "author_time" => @author_time,
          "author_date_str" => author_date_str,
+         "author_mail" => @author_mail,
          "commit_name" => @commit_name, "commit_time" => @commit_time,
+         "commit_mail" => @commit_mail,
          "commit_date_str" => commit_date_str, "commit_date_age" => commit_date_age,
          "description" => description, "short_description" => short_description
       }
