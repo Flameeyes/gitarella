@@ -19,6 +19,7 @@ lighttpd, but Apache should work just as fine);
   ( http://www.deveiate.org/projects/RMemCache/ );
 - diff-lcs extensions, mandatory for diff viewing
   ( http://raa.ruby-lang.org/project/diff-lcs ); TODO, make this optional;
+- and of course GIT (developed using version 1.4.0).
 
 Compared to gitweb, Gitarella tries to focus more on limiting the disk I/O when
 reading almost-static data. This is achieved through the optional memcached
