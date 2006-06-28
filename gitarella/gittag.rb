@@ -33,6 +33,13 @@ class GITTag
       @repo = repo
       @sha1 = sha1
 
+      if @sha1.hex == 0
+         @repo.push_gitdir
+         gitproc = IO.popen("git-rev-parse --verify #{sha1}")
+         @sha1 = gitproc.read.chomp
+         gitproc.close
+      end
+
       repo.push_gitdir
       gitproc = IO.popen("git-cat-file tag #{sha1}")
       data = gitproc.read.split("\n")
