@@ -6,14 +6,14 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 <table cellspacing="0">
 <tr><td>description</td><td>{{repository.description}}</td></tr>
 <tr><td>owner</td><td>{{repository.owner}}</td></tr>
-<tr><td>last change</td><td>{{repository.last_change_str}}</td></tr>
+<tr><td>last change</td><td>{{repository.head.commit_time | date_str}}</td></tr>
 </table>
 <div>
 <a class="title" href="{{currpath}}?mode=shortlog">shortlog</a></div>
 <table cellspacing="0">
 {% for commit in commits %}
 <tr class="light">
-<td><i>{{commit.commit_date_age}}</i></td>
+<td><i>{{commit.commit_time | age_str}}</i></td>
 <td><i>{{commit.author_name}}</i></td>
 <td><a class="list" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><b>{{commit.description}}</b></a></td>
 <td class="link"><a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a></td>
@@ -28,7 +28,7 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 <table cellspacing="0">
 {% for tag in repository.tags %}
 <tr class="light">
-<td><i>{{ tag.tagger_date_age }}</i></td>
+<td><i>{{ tag.tagger_time | age_str }}</i></td>
 <td><a class="list" href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}"><b>{{tag.name}}</b></a></td>
 <td><a class="list" href="{{currpath}}?mode=tag;htag={{tag.sha1}}">{{tag.description}}</a></td>
 <td class="link">
@@ -45,7 +45,7 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 <table cellspacing="0">
 {% for head in repository.heads %}
 <tr class="light">
-<td><i>{{ head.last_change_str }}</i></td>
+<td><i>{{ head.last_change | age_str }}</i></td>
 <td><a class="list" href="{{currpath}}?mode=shortlog;h={{head.sha1}}"><b>{{head.name}}</b></a></td>
 <td class="link"><a href="{{currpath}}?mode=shortlog;h={{head.sha1}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{head.sha1}}">log</a></td>
 </tr>

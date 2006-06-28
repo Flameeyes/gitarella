@@ -12,13 +12,13 @@
 </div>
 {% for commit in commits %}
 <div>
-<a class="title" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><span class="age">{{commit.commit_date_age}}</span>{{commit.short_description}}</a>
+<a class="title" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><span class="age">{{commit.commit_time | age_str}}</span>{{commit.short_description}}</a>
 </div>
 <div class="title_text">
 <div class="log_link">
 <a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a><br/>
 </div>
-<i>{{commit.author_name}} [{{commit.author_date_str}}]</i><br/>
+<i>{{commit.author_name}} [{{commit.author_time | date_str}}]</i><br/>
 </div>
 <div class="log_body">
 {{commit.description}}<br/>

@@ -68,19 +68,10 @@ class GITTag
       @gpg_signature = data.join("\n")
    end
 
-   def tagger_date_age
-      age_string( Time.now - @tagger_time )
-   end
-
-   def tagger_date_str
-      Time.at(@tagger_time).to_s
-   end
-
    def to_hash
       { "sha1" => @sha1, "name" => @name, "description" => @description,
         "gpg_signature" => @gpg_signature, "tagger_name" => @tagger_name,
         "tagger_mail" => @tagger_mail, "tagger_time" => @tagger_time,
-        "tagger_date_str" => tagger_date_str, "tagger_date_age" => tagger_date_age,
         "commit" => @commit.to_hash }
    end
 end

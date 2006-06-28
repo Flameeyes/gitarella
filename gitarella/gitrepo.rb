@@ -146,18 +146,6 @@ class GITRepo
       Time.now - commit.commit_time
    end
 
-   def last_change_age
-      return "n/a" if not commit
-
-      commit.commit_date_age
-   end
-
-   def last_change_str
-      return "n/a" if not commit
-
-      commit.commit_date_str
-   end
-
    def to_hash
       return unless @valid
 
@@ -165,7 +153,7 @@ class GITRepo
       heads.each_pair { |name, head|
          headshashes << {
             "name" => name, "sha1" => head,
-            "last_change_str" => commit(head).commit_date_age
+            "last_change" => commit(head).commit_time
             }
       }
 
@@ -174,10 +162,11 @@ class GITRepo
          tagshashes << tag.to_hash
       }
 
+      head = commit ? commit.to_hash : {}
+
       { "id" => @id, "path" => @path, "description" => @description,
         "owner" => @owner, "last_change" => last_change,
-        "last_change_age" => last_change_age, "last_change_str" => last_change_str,
-        "heads" => headshashes, "tags" => tagshashes, "head" => commit.to_hash }
+        "heads" => headshashes, "tags" => tagshashes, "head" => head }
    end
 end
 

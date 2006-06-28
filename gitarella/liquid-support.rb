@@ -16,11 +16,34 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require 'liquid'
+require 'gitarella/gitutils'
 
 module Gitarella
    module LiquidFilters
       def nl2br(input)
          input.gsub("\n", "<br />")
+      end
+
+      def date_str(input)
+         Time.at(input.to_i).to_s
+      end
+
+      def age_str(input)
+         return "n/a" unless input.to_i != 0
+         age_string( Time.now - input.to_i )
+      end
+
+      def age_str_colored(input)
+         return "n/a" unless input.to_i != 0
+
+         str = age_string( Time.now - input.to_i )
+         if (Time.now - input.to_i).to_i < 60*60*2
+            return "<span style='color: #009900'><b>#{str}</b></span>"
+         elsif (Time.now - input.to_i).to_i < 60*60*24*2
+            return "<span style='color: #009900'>#{str}</span>"
+         else
+            return str
+         end
       end
    end
 

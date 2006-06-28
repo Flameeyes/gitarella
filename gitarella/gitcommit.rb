@@ -74,18 +74,6 @@ class GITCommit
       @repo.commit(@parent)
    end
 
-   def commit_date_age
-      age_string( Time.now - @commit_time )
-   end
-
-   def commit_date_str
-      Time.at(@commit_time).to_s
-   end
-
-   def author_date_str
-      Time.at(@author_time).to_s
-   end
-
    def short_description(size = 80)
       str_reduce(@description, size)
    end
@@ -127,11 +115,9 @@ class GITCommit
       return {
          "sha1" => @sha1, "tree" => @tree, "parent_sha1" => @parent,
          "author_name" => @author_name, "author_time" => @author_time,
-         "author_date_str" => author_date_str,
          "author_mail" => @author_mail,
          "commit_name" => @commit_name, "commit_time" => @commit_time,
          "commit_mail" => @commit_mail,
-         "commit_date_str" => commit_date_str, "commit_date_age" => commit_date_age,
          "description" => description, "short_description" => short_description
       }
    end
