@@ -57,7 +57,7 @@ class GitarellaCGI
       end
 
       @template_params["prev_commits"] = ( from != @@repos[@repo_id].head ) ? @@repos[@repo_id].commit(from).parent.sha1 : false
-      @template_params["more_commits"] = commit
+      @template_params["more_commits"] = commit.sha1
    end
 end
 end
