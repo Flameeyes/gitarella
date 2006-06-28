@@ -149,13 +149,13 @@ class GITRepo
    def last_change_age
       return "n/a" if not commit
 
-      age_string( Time.now - commit.commit_time )
+      commit.commit_date_age
    end
 
    def last_change_str
       return "n/a" if not commit
 
-      Time.at(commit.commit_time).to_s
+      commit.commit_date_str
    end
 
    def to_hash
