@@ -10,7 +10,7 @@ HEAD &sdot; prev &sdot; <a title="Alt-n" accesskey="n" href="/?p=rubytagxx.git;a
 {% for commit in commits %}
 <tr class="light">
 <td><i>{{commit.commit_date_age}}</i></td>
-<td><i>{{commit.author}}</i></td>
+<td><i>{{commit.author_name}}</i></td>
 <td><a class="list" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><b>{{commit.short_description}}</b></a></td>
 <td class="link"><a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a></td>
 </tr>
