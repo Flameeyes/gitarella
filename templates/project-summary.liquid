@@ -28,7 +28,7 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 <table cellspacing="0">
 {% for tag in repository.tags %}
 <tr class="light">
-<td><i>{{ tag.commit.commit_date_age }}</i></td>
+<td><i>{{ tag.tagger_date_age }}</i></td>
 <td><a class="list" href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}"><b>{{tag.name}}</b></a></td>
 <td><a class="list" href="{{currpath}}?mode=tag;htag={{tag.sha1}}">{{tag.description}}</a></td>
 <td class="link">
