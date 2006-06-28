@@ -27,6 +27,8 @@ require "gitarella/gitutils"
 require "gitarella/project_show"
 require "gitarella/tree_browse"
 
+require "gitarella/liquid-support"
+
 $config = YAML::load(File.new("gitarella-config.yml").read)
 
 $memcache = nil
