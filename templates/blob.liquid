@@ -5,7 +5,7 @@
 <div><a class="title" href="{{currpath}}?mode=commit;h={{commit_hash}}">{{commit_desc}}</a></div>
 <div class="page_path"><b>{{file.path}}</b></div>
 <div class="page_body">
-{% for line in file.lines %}
-  <div class="pre"><a id="l{{forloop.index}}" href="#l{{forloop.index}}" class="linenr">    {{forloop.index}}</a> {{line}}</div>
-{% endfor %}
+{% alignedfor line in file.lines %}
+  <div class="pre"><a id="l{{forloop.index}}" href="#l{{forloop.index}}" class="linenr">{{forloop.aligidx}}{{forloop.index}}</a> {{line}}</div>
+{% endalignedfor %}
 </div>
