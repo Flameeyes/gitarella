@@ -62,8 +62,13 @@ class GITTag
 
       data = data.slice(data.index("")+1, data.size - data.index(""))
 
-      description = data.slice(0, data.index("")+1)
-      data = data.slice(data.index("")+1, data.size - data.index(""))
+      if data.index("")
+         description = data.slice(0, data.index("")+1)
+         data = data.slice(data.index("")+1, data.size - data.index(""))
+      else
+         description = data
+         data = []
+      end
       @description = description.join("\n")
       @gpg_signature = data.join("\n")
    end
