@@ -61,14 +61,15 @@ module Gitarella
 
       def initialize(cgi)
          @cgi = cgi
-         @path = cgi.path_info.split(/\/+/).delete_if { |x| x.empty? } if cgi.path_info
+         path_info = cgi.path_info ? cgi.path_info : ""
+         @path = path_info.split(/\/+/).delete_if { |x| x.empty? }
 
          # Rule out the static files immediately
          static_file(".#{cgi.path_info}") if @path[0] == "static"
 
          @template_params = {
             "basepath" => cgi.script_name,
-            "currpath" => (cgi.script_name + cgi.path_info + "/").gsub("//", "/")
+            "currpath" => (cgi.script_name + path_info + "/").gsub("//", "/")
          }
 
          @content = ""
