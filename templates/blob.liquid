@@ -9,7 +9,7 @@
 </div>
 <div><a class="title" href="{{basepath}}/{{repository.id}}/?mode=commit;h={{commit_hash}}">{{commit_desc}}</a></div>
 <div class="page_body">
-{% alignedfor line in file.lines %}
+{% specialfor line in file.lines %}
   <div class="pre"><a id="l{{forloop.index}}" href="#l{{forloop.index}}" class="linenr">{{forloop.aligidx}}{{forloop.index}}</a> {{line}}</div>
-{% endalignedfor %}
+{% endspecialfor %}
 </div>

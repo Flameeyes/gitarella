@@ -47,7 +47,7 @@ module Gitarella
       end
    end
 
-   class AlignedFor < Liquid::Block
+   class SpecialFor < Liquid::Block
       Syntax = /(\w+)\s+in\s+(#{Liquid::AllowedVariableCharacters}+)/
 
       def initialize(markup, tokens)
@@ -57,12 +57,12 @@ module Gitarella
             @variable_name = $1
             @collection_name = $2
          else
-            raise SyntaxError.new("Syntax Error in 'afor loop' - Valid syntax: afor [item] in [collection]")
+            raise SyntaxError.new("Syntax Error in 'specialfor loop' - Valid syntax: specialfor [item] in [collection]")
          end
       end
 
       def render(context)
-         collection = context[@collection_name] or raise ArgumentError.new("Error in 'for loop' - '#{@collection_name}' does not exist.")
+         collection = context[@collection_name] or raise ArgumentError.new("Error in 'specialfor loop' - '#{@collection_name}' does not exist.")
          length = collection.length
 
          result = []
@@ -91,6 +91,7 @@ module Gitarella
                   'aligidx' => alignment,
                   'index'   => index + 1,
                   'index0'  => index,
+                  'even'    => ( ( index % 2 != 1 ) ? false : true ),
                   'rindex'  => length - index,
                   'rindex0' => length - index -1,
                   'raligidx'=> ralignment,
@@ -105,7 +106,7 @@ module Gitarella
    end
 
    Liquid::Template.register_filter(LiquidFilters)
-   Liquid::Template.register_block('alignedfor', Gitarella::AlignedFor)
+   Liquid::Template.register_block('specialfor', Gitarella::SpecialFor)
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;
