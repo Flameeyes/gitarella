@@ -166,7 +166,9 @@ class GITRepo
 
       { "id" => @id, "path" => @path, "description" => @description,
         "owner" => @owner, "last_change" => last_change,
-        "heads" => headshashes, "tags" => tagshashes, "head" => head }
+        "heads" => headshashes, "has_heads" => (not headshashes.empty?),
+        "tags" => tagshashes, "has_tags" => (not tagshashes.empty?),
+        "head" => head }
    end
 end
 

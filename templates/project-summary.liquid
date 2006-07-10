@@ -24,6 +24,7 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 {% endif %}
 </table>
 
+{% if repository.has_tags %}
 <div><a class="title" href="{{currpath}}?mode=tags">tags</a></div>
 <table cellspacing="0">
 {% for tag in repository.tags %}
@@ -40,7 +41,9 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 </tr>
 {% endfor %}
 </table>
+{% endif %}
 
+{% if repository.has_heads %}
 <div><a class="title" href="{{currpath}}?mode=heads">heads</a></div>
 <table cellspacing="0">
 {% for head in repository.heads %}
@@ -51,3 +54,4 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 </tr>
 {% endfor %}
 </table>
+{% endif %}
