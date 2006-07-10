@@ -8,10 +8,7 @@
 <div class="page_body">
 <div class="diff_info">blob:<a href="{{currpath}}?h={{old.sha1}}">{{old.sha1}}</a> -&gt; blob:<a href="{{currpath}}?h={{new.sha1}}">{{new.sha1}}</a></div>
 {% for line in difflines %}
-  <div class="pre 
-  {% if line.status == "removed" %}removed{% endif %}
-  {% if line.status == "added" %}added{% endif %}
-  ">{{ line.line }}</div>
+  <div class="pre {{line.status}}">{{ line.line }}</div>
 {% endfor %}
 <!--
 <div class="pre" style="color:#cc0000;">- - - CMakeLists.txt</div>
