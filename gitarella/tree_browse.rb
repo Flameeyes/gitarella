@@ -104,7 +104,12 @@ class GitarellaCGI
    end
 
    def static_data(data)
-      @cgi.out({ "content-type" => FileMagic.new(FileMagic::MAGIC_MIME).buffer(data)}) { data }
+      begin
+         contentmime = FileMagic.new(FileMagic::MAGIC_MIME).buffer(data)
+      rescue NameError
+         contentmime = "application/octet-stream"
+      end
+      @cgi.out({ "content-type" => contentmime}) { data }
       raise StaticOutput
    end
 end

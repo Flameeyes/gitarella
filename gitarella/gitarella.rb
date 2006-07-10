@@ -17,9 +17,14 @@
 
 require "cgi"
 require "yaml"
-require "filemagic"
 require "liquid"
 require "pathname"
+
+begin
+   require "filemagic"
+rescue LoadError
+   $stderr.puts "Unable to load 'filemagic' extension, mime support will be disabled."
+end
 
 require "gitarella/exceptions"
 require "gitarella/gitrepo"
@@ -102,10 +107,15 @@ module Gitarella
       end
 
       def static_file(path)
-            staticfile = File.open(path)
+         staticfile = File.open(path)
+         begin
             staticmime = FileMagic.new(FileMagic::MAGIC_MIME|FileMagic::MAGIC_SYMLINK).file(path)
-            @cgi.out({ "content-type" => staticmime}) { staticfile.read }
-            raise StaticOutput
+         rescue NameError
+            staticmime = "application/octet-stream"
+         end
+
+         @cgi.out({ "content-type" => staticmime}) { staticfile.read }
+         raise StaticOutput
       end
 
       def get_repo_id
