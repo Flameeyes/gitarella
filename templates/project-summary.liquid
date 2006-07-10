@@ -18,8 +18,8 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
     <tr class="dark">
   {% endif %}
 <td><i>{{commit.commit_time | age_str}}</i></td>
-<td><i>{{commit.author_name}}</i></td>
-<td><a class="list" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><b>{{commit.description}}</b></a></td>
+<td><i>{{commit.author_name | escapespecialchars}}</i></td>
+<td><a class="list" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><b>{{commit.description | escapespecialchars | nl2br }}</b></a></td>
 <td class="link"><a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a></td>
 </tr>
 {% endspecialfor  %}
@@ -38,8 +38,8 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
     <tr class="dark">
   {% endif %}
 <td><i>{{ tag.tagger_time | age_str }}</i></td>
-<td><a class="list" href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}"><b>{{tag.name}}</b></a></td>
-<td><a class="list" href="{{currpath}}?mode=tag;htag={{tag.sha1}}">{{tag.description}}</a></td>
+<td><a class="list" href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}"><b>{{tag.name | escapespecialchars}}</b></a></td>
+<td><a class="list" href="{{currpath}}?mode=tag;htag={{tag.sha1}}">{{tag.description | escapespecialchars}}</a></td>
 <td class="link">
   <a href="{{currpath}}?mode=tag;htag={{tag.sha1}}">shortlog</a> |
   <a href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">commit</a> |
