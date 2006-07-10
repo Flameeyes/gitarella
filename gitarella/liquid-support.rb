@@ -45,6 +45,10 @@ module Gitarella
             return str
          end
       end
+
+      def escapespecialchars(input)
+         input.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;')
+      end
    end
 
    class SpecialFor < Liquid::Block
