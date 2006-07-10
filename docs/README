@@ -19,6 +19,9 @@ lighttpd, but Apache should work just as fine);
   ( http://www.deveiate.org/projects/RMemCache/ );
 - diff-lcs extensions, mandatory for diff viewing
   ( http://raa.ruby-lang.org/project/diff-lcs ); TODO, make this optional;
+- filemagic extension, required for serving proper mime-types of the files, both
+  statics and raw from the repository; optional but highly suggested
+  ( http://grub.ath.cx/filemagic/ );
 - and of course GIT (developed using version 1.4.0).
 
 Compared to gitweb, Gitarella tries to focus more on limiting the disk I/O when
