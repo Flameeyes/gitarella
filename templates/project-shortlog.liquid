@@ -13,14 +13,18 @@
 <div>
 <a class="title" href="{{currpath}}?mode=summary">&nbsp;</a></div>
 <table cellspacing="0">
-{% for commit in commits %}
-<tr class="light">
+{% specialfor commit in commits %}
+  {% if forloop.even %}
+    <tr class="light">
+  {% else %}
+    <tr class="dark">
+  {% endif %}
 <td><i>{{commit.commit_time | age_str}}</i></td>
 <td><i>{{commit.author_name}}</i></td>
 <td><a class="list" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><b>{{commit.short_description}}</b></a></td>
 <td class="link"><a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a></td>
 </tr>
-{% endfor %}
+{% endspecialfor %}
 <!-- It's not funny to put all in one page... but leave it here for now :P
 <td><a title="Alt-n" href="/?p=rubytagxx.git;a=shortlog;h=52b3c0f6245d427689de7eee15673ba76c17706c;pg=1">next</a></td>
 -->

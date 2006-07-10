@@ -11,14 +11,18 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 <div>
 <a class="title" href="{{currpath}}?mode=shortlog">shortlog</a></div>
 <table cellspacing="0">
-{% for commit in commits %}
-<tr class="light">
+{% specialfor commit in commits %}
+  {% if forloop.even %}
+    <tr class="light">
+  {% else %}
+    <tr class="dark">
+  {% endif %}
 <td><i>{{commit.commit_time | age_str}}</i></td>
 <td><i>{{commit.author_name}}</i></td>
 <td><a class="list" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><b>{{commit.description}}</b></a></td>
 <td class="link"><a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a></td>
 </tr>
-{% endfor %}
+{% endspecialfor  %}
 {% if more_commits %}
 <tr class="light"><td><a href="{{currpath}}?mode=shortlog">...</a></td></tr>
 {% endif %}
@@ -27,8 +31,12 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
 {% if repository.has_tags %}
 <div><a class="title" href="{{currpath}}?mode=tags">tags</a></div>
 <table cellspacing="0">
-{% for tag in repository.tags %}
-<tr class="light">
+{% specialfor tag in repository.tags %}
+  {% if forloop.even %}
+    <tr class="light">
+  {% else %}
+    <tr class="dark">
+  {% endif %}
 <td><i>{{ tag.tagger_time | age_str }}</i></td>
 <td><a class="list" href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}"><b>{{tag.name}}</b></a></td>
 <td><a class="list" href="{{currpath}}?mode=tag;htag={{tag.sha1}}">{{tag.description}}</a></td>
@@ -39,19 +47,23 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | 
   <a href="{{currpath}}?mode=log;h={{tag.commit.sha1}}">log</a>
 </td>
 </tr>
-{% endfor %}
+{% endspecialfor  %}
 </table>
 {% endif %}
 
 {% if repository.has_heads %}
 <div><a class="title" href="{{currpath}}?mode=heads">heads</a></div>
 <table cellspacing="0">
-{% for head in repository.heads %}
-<tr class="light">
+{% specialfor head in repository.heads %}
+  {% if forloop.even %}
+    <tr class="light">
+  {% else %}
+    <tr class="dark">
+  {% endif %}
 <td><i>{{ head.last_change | age_str }}</i></td>
 <td><a class="list" href="{{currpath}}?mode=shortlog;h={{head.sha1}}"><b>{{head.name}}</b></a></td>
 <td class="link"><a href="{{currpath}}?mode=shortlog;h={{head.sha1}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{head.sha1}}">log</a></td>
 </tr>
-{% endfor %}
+{% endspecialfor %}
 </table>
 {% endif %}
