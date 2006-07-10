@@ -17,7 +17,7 @@
 
 class GITCommit
    attr_accessor :author_name, :author_time, :commit_name, :commit_time, :tree,
-      :sha1
+      :sha1, :description
 
    def GITCommit.get(repo, sha1)
       return $memcache["gitcommit-#{sha1}"] if $memcache and $memcache["gitcommit-#{sha1}"]
@@ -76,10 +76,6 @@ class GITCommit
 
    def short_description(size = 80)
       str_reduce(@description, size)
-   end
-
-   def description
-      @description.gsub("\n", "<br />") if @description
    end
 
    def changes(base = @parent)
