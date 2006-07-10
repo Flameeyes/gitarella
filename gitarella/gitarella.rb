@@ -143,9 +143,17 @@ module Gitarella
       rescue StaticOutput # We served a static page for whatever reason, just exit
          return
       rescue FileNotFound => err404
-         cgi.out({"status" => CGI::HTTP_STATUS["NOT_FOUND"]}) { err404.message + err404.backtrace.inspect }
+         cgi.out({"status" => CGI::HTTP_STATUS["NOT_FOUND"]}) {
+            Liquid::Template.parse( File.open("templates/exception.liquid").read ).render(
+               { "basepath" => cgi.script_name, "title" => "Not found",
+               "message" => err404.message, "backtrace" => err404.backtrace } )
+         }
       rescue Exception => error
-         cgi.out({"status" => CGI::HTTP_STATUS["SERVER_ERROR"]}) { error.to_s + error.backtrace.inspect}
+         cgi.out({"status" => CGI::HTTP_STATUS["SERVER_ERROR"]}) {
+            Liquid::Template.parse( File.open("templates/exception.liquid").read ).render(
+               { "basepath" => cgi.script_name, "title" => "Error",
+               "message" => error.message, "backtrace" => error.backtrace } )
+         }
          raise
       end
    end

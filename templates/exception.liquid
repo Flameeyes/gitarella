@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+<meta name="robots" content="index, nofollow"/>
+<title>gitarella - {{ title }}</title>
+
+<link rel="stylesheet" href="{{basepath}}/static/styles.css" type="text/css" media="screen" />
+<link rel="shortcut icon" href="{{basepath}}/static/favicon.png" />
+
+</head>
+<body>
+<div class="page_header">
+<a href="http://www.kernel.org/pub/software/scm/git/docs/" title="git documentation"><img src="{{basepath}}/static/git-logo.png" width="72" height="27" alt="git" style="float:right; border-width:0px;"/></a>
+<a href="{{basepath}}/">projects</a> / {{message}}
+</div>
+
+<div class="title">Backtrace</div>
+<table cellspacing="0">
+{% specialfor frame in backtrace %}
+  {% if forloop.even %}
+    <tr class="light">
+  {% else %}
+    <tr class="dark">
+  {% endif %}
+<td>{{ frame }}</td>
+</tr>
+{% endspecialfor %}
+</table>
+</div>
+
+<div class="page_footer">
+{{message}}
+</div>
+</body>
+</html>
