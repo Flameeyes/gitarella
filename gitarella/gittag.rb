@@ -60,7 +60,7 @@ class GITTag
       @tagger_time = Time.at($3.to_i)
       # tagger_tz = $4 # TODO Implement timezone diff
 
-      data = data.slice(data.index("")+1, data.size - data.index(""))
+      data = data.slice(data.index("")+1, data.size - data.index("")) if data.index("")
 
       if data.index("")
          description = data.slice(0, data.index("")+1)
