@@ -47,6 +47,7 @@ module Gitarella
       end
 
       def escapespecialchars(input)
+         return "" unless input
          input.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;')
       end
    end
