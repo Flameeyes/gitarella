@@ -54,13 +54,22 @@ class GITTag
       raise "ouch, non commit tag?" unless data[1] == "type commit"
       data[2] =~ /^tag (.*)$/
       @name = $1
-      data[3] =~ /^tagger (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
-      @tagger_name = $1
-      @tagger_mail = $2
-      @tagger_time = Time.at($3.to_i)
+      if data[3] =~ /^tagger (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
+         @tagger_name = $1
+         @tagger_mail = $2
+         @tagger_time = Time.at($3.to_i)
+      elsif data[3] =~ /^tagger (.*) <(.*)> *$/
+         @tagger_name = $1
+         @tagger_mail = $2
+      end
       # tagger_tz = $4 # TODO Implement timezone diff
 
-      data = data.slice(data.index("")+1, data.size - data.index("")) if data.index("")
+      @description = ""
+      @gpg_signature = ""
+
+      return unless data.index("")
+
+      data = data.slice(data.index("")+1, data.size - data.index(""))
 
       if data.index("")
          description = data.slice(0, data.index("")+1)
