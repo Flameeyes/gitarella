@@ -21,7 +21,7 @@ require 'gitarella/gitutils'
 module Gitarella
    module LiquidFilters
       def nl2br(input)
-         input.gsub("\n", "<br />")
+         input.strip.gsub("\n", "<br />")
       end
 
       def date_str(input)
