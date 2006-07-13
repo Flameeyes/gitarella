@@ -57,9 +57,10 @@ if $config["memcache-servers"] and not $config["memcache-servers"].empty?
       $memcache["gitarella-test"] = true
    rescue LoadError
       $log.error "memcache configured, but unable to load 'memcache' extension."
+      $memcache = Hash.new
    rescue MemCache::MemCacheError
       $log.error "memcache configured, but no server available."
-      $memcache = nil
+      $memcache = Hash.new
    end
 end
 
