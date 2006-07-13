@@ -22,18 +22,6 @@ require "pathname"
 
 $config = YAML::load(File.new("gitarella-config.yml").read)
 
-if $config["logging"]["enabled"] != "false"
-   begin
-      require 'rubygems'
-      require_gem 'log4r'
-   rescue LoadError
-      require 'log4r'
-   end
-
-   $log = Log4r::Logger.new('gitarella')
-   $log.outputters = Log4r::Outputter.stderr
-end
-
 begin
    require "filemagic"
 rescue LoadError

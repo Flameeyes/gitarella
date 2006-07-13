@@ -51,7 +51,32 @@ class Globals
       }
    end
 
+   def Globals.init_log
+      case $config["logging"]["enabled"].to_s.downcase
+         when "false", "no", "0"
+            throw NotImplemented_TODO.new
+      end
+
+      begin
+         require 'rubygems'
+         require_gem 'log4r'
+      rescue LoadError
+         require 'log4r'
+      end
+      @@log = Log4r::Logger.new('gitarella')
+
+      case $config["logging"]["output"].to_s.downcase
+         when "syslog"
+            @@log.outputters = Log4r::SyslogOutputter.new("gitarella")
+         else
+            @@log.outputters = Log4r::Outputter.stderr
+      end
+
+      $log = @@log
+   end
+
    def Globals.init_all
+      init_log
       init_cache
       init_repos
    end
