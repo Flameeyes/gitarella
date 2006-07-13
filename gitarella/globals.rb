@@ -37,8 +37,9 @@ class Globals
       end
    end
 
-   @@repos = Hash.new
+   @@repos = nil
    def Globals.repos
+      init_repos unless @@repos
       @@repos
    end
 
@@ -80,7 +81,6 @@ class Globals
    def Globals.init_all
       init_log
       init_cache
-      init_repos
    end
 end
 end
