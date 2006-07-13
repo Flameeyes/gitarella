@@ -22,6 +22,8 @@ lighttpd, but Apache should work just as fine);
 - filemagic extension, required for serving proper mime-types of the files, both
   statics and raw from the repository; optional but highly suggested
   ( http://grub.ath.cx/filemagic/ );
+- log4r extension, currently mandatory for logging capabilities
+  ( http://log4r.sourceforge.net/ ); TODO, make this optiona;
 - and of course GIT (developed using version 1.4.0).
 
 Compared to gitweb, Gitarella tries to focus more on limiting the disk I/O when
