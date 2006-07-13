@@ -28,6 +28,8 @@ class GITRepo
       @owner = array["owner"]
 
       @valid = ( @id and @path and Pathname.new(@path).exist? )
+      $log.error "path #{@path} for repository #{@id} does not exist." \
+         if not valid and not Pathname.new(@path).exist?
 
       return nil unless @valid
 
