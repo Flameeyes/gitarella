@@ -64,6 +64,12 @@ class BinaryOperationInvalid < Exception
    end
 end
 
+class NotImplemented_TODO < Exception
+   def message
+      "Sorry this feature is not implemented yet."
+   end
+end
+
 end
 
 
