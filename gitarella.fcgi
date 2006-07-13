@@ -35,8 +35,6 @@ require 'gitarella/gitarella'
 
 include Gitarella
 
-STDERR.close
-
 Globals::init_all
 
 countReq = 0; t0 = Time.new
