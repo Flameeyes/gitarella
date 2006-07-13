@@ -20,10 +20,24 @@ require "yaml"
 require "liquid"
 require "pathname"
 
+$config = YAML::load(File.new("gitarella-config.yml").read)
+
+if $config["logging"]["enabled"] != "false"
+   begin
+      require 'rubygems'
+      require_gem 'log4r'
+   rescue LoadError
+      require 'log4r'
+   end
+
+   $log = Log4r::Logger.new('gitarella')
+   $log.outputters = Log4r::Outputter.stderr
+end
+
 begin
    require "filemagic"
 rescue LoadError
-   $stderr.puts "Unable to load 'filemagic' extension, mime support will be disabled."
+   $log.error "unable to load 'filemagic' extension, mime support will be disabled."
 end
 
 require "gitarella/exceptions"
@@ -34,17 +48,17 @@ require "gitarella/tree_browse"
 
 require "gitarella/liquid-support"
 
-$config = YAML::load(File.new("gitarella-config.yml").read)
-
 $memcache = nil
 
 if $config["memcache-servers"] and not $config["memcache-servers"].empty?
-   require "memcache"
-   $memcache = MemCache::new($config["memcache-servers"], :namespace => 'gitarella', :compression => 'true')
    begin
+      require "memcache"
+      $memcache = MemCache::new($config["memcache-servers"], :namespace => 'gitarella', :compression => 'true')
       $memcache["gitarella-test"] = true
+   rescue LoadError
+      $log.error "memcache configured, but unable to load 'memcache' extension."
    rescue MemCache::MemCacheError
-      $stderr.puts "Gitarella: memcache configured but no server available."
+      $log.error "memcache configured, but no server available."
       $memcache = nil
    end
 end
