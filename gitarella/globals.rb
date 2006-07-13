@@ -17,12 +17,14 @@
 
 module Gitarella
 class Globals
-   @@cache = Hash.new
+   @@cache = nil
    def Globals.cache
+      init_cache unless @@cache
       @@cache
    end
 
    def Globals.init_cache
+      @@cache = Hash.new
       return unless $config["memcache-servers"] and not $config["memcache-servers"].empty?
 
       begin
@@ -80,7 +82,6 @@ class Globals
 
    def Globals.init_all
       init_log
-      init_cache
    end
 end
 end
