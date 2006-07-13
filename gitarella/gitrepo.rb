@@ -141,7 +141,7 @@ class GITRepo
    end
 
    def last_change
-      return Time.now if not commit
+      return Time.now if not commit or not commit.commit_time
 
       Time.now - commit.commit_time
    end
