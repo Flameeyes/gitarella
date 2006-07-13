@@ -47,7 +47,7 @@ class GitarellaCGI
    def get_commits(number = 10, from = @commit_hash)
       @template_params["commits"] = Array.new
 
-      commit = @@repos[@repo_id].commit(from)
+      commit = Globals::repos[@repo_id].commit(from)
       count = 0
       while commit and count < number
          @template_params["commits"] << commit.to_hash
@@ -56,7 +56,7 @@ class GitarellaCGI
          count = count+1
       end
 
-      @template_params["prev_commits"] = ( from != @@repos[@repo_id].head ) ? @@repos[@repo_id].commit(from).sha1 : false
+      @template_params["prev_commits"] = ( from != Globals::repos[@repo_id].head ) ? Globals::repos[@repo_id].commit(from).sha1 : false
       @template_params["more_commits"] = commit ? commit.sha1 : false
    end
 end

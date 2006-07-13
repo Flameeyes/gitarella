@@ -32,11 +32,12 @@ class CGI
 end
 
 require 'gitarella/gitarella'
+
 include Gitarella
 
 STDERR.close
 
-GitarellaCGI::init_repos
+Globals::init_all
 
 countReq = 0; t0 = Time.new
 # Process CGI requests sent by the fastCGI engine

@@ -45,39 +45,13 @@ require "gitarella/gitrepo"
 require "gitarella/gitutils"
 require "gitarella/project_show"
 require "gitarella/tree_browse"
+require "gitarella/globals"
 
 require "gitarella/liquid-support"
-
-$memcache = nil
-
-if $config["memcache-servers"] and not $config["memcache-servers"].empty?
-   begin
-      require "memcache"
-      $memcache = MemCache::new($config["memcache-servers"], :namespace => 'gitarella', :compression => 'true')
-      $memcache["gitarella-test"] = true
-   rescue LoadError
-      $log.error "memcache configured, but unable to load 'memcache' extension."
-      $memcache = Hash.new
-   rescue MemCache::MemCacheError
-      $log.error "memcache configured, but no server available."
-      $memcache = Hash.new
-   end
-end
 
 module Gitarella
    class GitarellaCGI
       attr_reader :path
-
-      @@repos = Hash.new
-
-      def GitarellaCGI.init_repos
-         @@repos = Hash.new
-
-         $config["repositories"].each { |repo|
-            gitrepo = GITRepo.new(repo)
-            @@repos[gitrepo.id] = gitrepo
-         }
-      end
 
       def initialize(cgi)
          @cgi = cgi
@@ -108,7 +82,7 @@ module Gitarella
 
       def project_list
          @template_params["repositories"] = Array.new
-         @@repos.each_value { |gitrepo|
+         Globals::repos.each_value { |gitrepo|
             next unless gitrepo.valid
             @template_params["repositories"] << gitrepo.to_hash
          }
@@ -135,8 +109,8 @@ module Gitarella
 
       def get_repo_id
          @repo_id = @path[0]; @path.delete_at(0)
-         raise RepositoryNotFound.new(@repo_id) unless @@repos.has_key?(@repo_id)
-         @repo = @@repos[@repo_id]
+         raise RepositoryNotFound.new(@repo_id) unless Globals::repos.has_key?(@repo_id)
+         @repo = Globals::repos[@repo_id]
 
          @commit_hash = (@cgi.has_key?("h") and not @cgi["h"].empty?) ? @cgi["h"] : @repo.head
 

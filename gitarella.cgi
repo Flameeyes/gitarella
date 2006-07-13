@@ -20,7 +20,7 @@ require 'gitarella/gitarella'
 
 include Gitarella
 
-GitarellaCGI::init_repos
+Globals::init_all
 handle(CGI.new)
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

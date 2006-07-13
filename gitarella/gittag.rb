@@ -17,11 +17,11 @@
 
 class GITTag
    def GITTag.get(repo, sha1)
-      return $memcache["gittag-#{sha1}"] if $memcache["gittag-#{sha1}"]
+      return Globals.cache["gittag-#{sha1}"] if Globals.cache["gittag-#{sha1}"]
 
       ret = GITTag.new(repo, sha1)
 
-      $memcache["gittag-#{sha1}"] = ret
+      Globals.cache["gittag-#{sha1}"] = ret
 
       return ret
    end

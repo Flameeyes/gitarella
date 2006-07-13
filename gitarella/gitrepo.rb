@@ -66,8 +66,8 @@ class GITRepo
    end
 
    def list(path = ".", sha1 = @head)
-      return $memcache["git-list_#{commit.tree}_#{path}"] \
-         if $memcache["git-list_#{commit.tree}_#{path}"]
+      return Globals.cache["git-list_#{commit.tree}_#{path}"] \
+         if Globals.cache["git-list_#{commit.tree}_#{path}"]
 
       files = Array.new
 
@@ -85,7 +85,7 @@ class GITRepo
 
       gitproc.close
 
-      $memcache["git-list_#{commit.tree}_#{path}"] = files if $memcache
+      Globals.cache["git-list_#{commit.tree}_#{path}"] = files if cache
       return files
    end
 
