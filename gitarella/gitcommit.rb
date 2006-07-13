@@ -20,11 +20,11 @@ class GITCommit
       :sha1, :description
 
    def GITCommit.get(repo, sha1)
-      return $memcache["gitcommit-#{sha1}"] if $memcache and $memcache["gitcommit-#{sha1}"]
+      return $memcache["gitcommit-#{sha1}"] if $memcache["gitcommit-#{sha1}"]
 
       ret = GITCommit.new(repo, sha1)
 
-      $memcache["gitcommit-#{sha1}"] = ret if $memcache
+      $memcache["gitcommit-#{sha1}"] = ret
 
       return ret
    end
@@ -80,7 +80,7 @@ class GITCommit
 
    def changes(base = @parent)
       return $memcache["gitcommit-changes-#{sha1}_#{base}"] \
-         if $memcache and $memcache["gitcommit-changes-#{sha1}_#{base}"]
+         if $memcache["gitcommit-changes-#{sha1}_#{base}"]
       changes = Array.new
 
       @repo.push_gitdir
@@ -103,7 +103,7 @@ class GITCommit
       $log.debug changes.inspect
 
       gitproc.close
-      $memcache["gitcommit-changes-#{sha1}_#{base}"] = changes if $memcache
+      $memcache["gitcommit-changes-#{sha1}_#{base}"] = changes
       return changes
    end
 

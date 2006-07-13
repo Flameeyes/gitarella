@@ -67,7 +67,7 @@ class GITRepo
 
    def list(path = ".", sha1 = @head)
       return $memcache["git-list_#{commit.tree}_#{path}"] \
-         if $memcache and $memcache["git-list_#{commit.tree}_#{path}"]
+         if $memcache["git-list_#{commit.tree}_#{path}"]
 
       files = Array.new
 
