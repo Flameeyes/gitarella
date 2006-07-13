@@ -29,7 +29,7 @@ class GITTag
    end
 
    def initialize(repo, sha1)
-      $stderr.puts "GITTag:initialize(#{repo}, #{sha1})"
+      $log.debug "GITTag:initialize(#{repo}, #{sha1})"
       @repo = repo
       @sha1 = sha1
 
@@ -47,7 +47,7 @@ class GITTag
 
       raise TagNotFound.new(@repo, @sha1) if data.empty?
 
-      $stderr.puts data.inspect
+      $log.debug data.inspect
 
       data[0] =~ /^object ([a-f0-9]+)$/
       @commit = GITCommit.get(@repo, $1)

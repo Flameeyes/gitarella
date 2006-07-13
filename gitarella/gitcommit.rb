@@ -30,7 +30,7 @@ class GITCommit
    end
 
    def initialize(repo, sha1)
-      $stderr.puts "GITCommit:initialize(#{repo}, #{sha1})"
+      $log.debug "GITCommit:initialize(#{repo}, #{sha1})"
       @repo = repo
       @sha1 = sha1
 
@@ -41,7 +41,7 @@ class GITCommit
 
       raise CommitNotFound.new(@repo, @sha1) if data.empty?
 
-      $stderr.puts data.inspect
+      $log.debug data.inspect
 
       verify_report = data[0].chomp; data.delete_at(0)
       @tree = data[0].split[1].chomp; data.delete_at(0)
@@ -100,7 +100,7 @@ class GITCommit
          changes << change
       }
 
-      $stderr.puts changes.inspect
+      $log.debug changes.inspect
 
       gitproc.close
       $memcache["gitcommit-changes-#{sha1}_#{base}"] = changes if $memcache
