@@ -28,7 +28,7 @@ class GITRepo
       @owner = array["owner"]
 
       @valid = ( @id and @path and Pathname.new(@path).exist? )
-      $log.error "path #{@path} for repository #{@id} does not exist." \
+      Globals::log.error "path #{@path} for repository #{@id} does not exist." \
          if not valid and not Pathname.new(@path).exist?
 
       return nil unless @valid
@@ -58,10 +58,10 @@ class GITRepo
    end
 
    def commit(sha1 = @head)
-      $log.debug "GITRepo.commit(#{sha1})"
+      Globals::log.debug "GITRepo.commit(#{sha1})"
       return nil if not sha1 or sha1.empty?
       ret = GITCommit.get(self, sha1)
-      $log.debug ret
+      Globals::log.debug ret
       return ret
    end
 
@@ -81,7 +81,7 @@ class GITRepo
          "type" => linedata[1], "sha1" => linedata[2], "name" => linedata[3].split("/")[-1] }
       }
 
-      $log.debug files.inspect
+      Globals::log.debug files.inspect
 
       gitproc.close
 
@@ -90,7 +90,7 @@ class GITRepo
    end
 
    def file(path, sha1 = nil)
-      $log.debug "GITRepo.file(#{path   }, #{sha1.inspect})"
+      Globals::log.debug "GITRepo.file(#{path   }, #{sha1.inspect})"
       push_gitdir
 
       if not sha1 or sha1.empty?
@@ -120,7 +120,7 @@ class GITRepo
          heads[entry.basename] = entry.read.chomp
       }
 
-      $log.debug heads.inspect
+      Globals::log.debug heads.inspect
 
       return heads
    end

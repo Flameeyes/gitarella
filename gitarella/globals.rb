@@ -31,9 +31,9 @@ class Globals
          memcache["gitarella-test"] = true
          @@cache = memcache
       rescue LoadError
-         $log.error "memcache configured, but unable to load 'memcache' extension."
+         Globals::log.error "memcache configured, but unable to load 'memcache' extension."
       rescue MemCache::MemCacheError
-         $log.error "memcache configured, but no server available."
+         Globals::log.error "memcache configured, but no server available."
       end
    end
 
@@ -49,6 +49,10 @@ class Globals
          gitrepo = GITRepo.new(repo)
          @@repos[gitrepo.id] = gitrepo
       }
+   end
+
+   def Globals.log
+      @@log
    end
 
    def Globals.init_log
@@ -71,8 +75,6 @@ class Globals
          else
             @@log.outputters = Log4r::Outputter.stderr
       end
-
-      $log = @@log
    end
 
    def Globals.init_all

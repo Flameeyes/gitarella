@@ -108,7 +108,7 @@ class GitarellaCGI
          require "filemagic"
          contentmime = FileMagic.new(FileMagic::MAGIC_MIME).buffer(data)
       rescue LoadError
-         $log.error "unable to load 'filemagic' extension, mime support will be disabled."
+         Globals::log.error "unable to load 'filemagic' extension, mime support will be disabled."
          contentmime = "application/octet-stream"
       end
       @cgi.out({ "content-type" => contentmime}) { data }

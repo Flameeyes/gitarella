@@ -83,7 +83,7 @@ module Gitarella
             require "filemagic"
             staticmime = FileMagic.new(FileMagic::MAGIC_MIME|FileMagic::MAGIC_SYMLINK).file(path)
          rescue LoadError
-            $log.error "unable to load 'filemagic' extension, mime support will be disabled."
+            Globals::log.error "unable to load 'filemagic' extension, mime support will be disabled."
             staticmime = "application/octet-stream"
          end
 
