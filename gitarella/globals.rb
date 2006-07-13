@@ -90,6 +90,15 @@ class Globals
          when "syslog" then   Log4r::SyslogOutputter.new("gitarella")
          else                 Log4r::Outputter.stderr
       end
+
+      @@log.level = case $config["logging"]["level"].to_s.downcase
+         when "debug" then    Log4r::DEBUG
+         when "info" then     Log4r::INFO
+         when "warn" then     Log4r::WARN
+         when "error" then    Log4r::ERROR
+         when "fatal" then    Log4r::FATAL
+         else                 Log4r::WARN
+      end
    end
 
    def Globals.init_all
