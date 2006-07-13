@@ -22,12 +22,6 @@ require "pathname"
 
 $config = YAML::load(File.new("gitarella-config.yml").read)
 
-begin
-   require "filemagic"
-rescue LoadError
-   $log.error "unable to load 'filemagic' extension, mime support will be disabled."
-end
-
 require "gitarella/exceptions"
 require "gitarella/gitrepo"
 require "gitarella/gitutils"
@@ -86,8 +80,10 @@ module Gitarella
       def static_file(path)
          staticfile = File.open(path)
          begin
+            require "filemagic"
             staticmime = FileMagic.new(FileMagic::MAGIC_MIME|FileMagic::MAGIC_SYMLINK).file(path)
-         rescue NameError
+         rescue LoadError
+            $log.error "unable to load 'filemagic' extension, mime support will be disabled."
             staticmime = "application/octet-stream"
          end
 
