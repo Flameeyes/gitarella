@@ -85,7 +85,7 @@ class GITRepo
 
       gitproc.close
 
-      Globals.cache["git-list_#{commit.tree}_#{path}"] = files if cache
+      Globals.cache["git-list_#{commit.tree}_#{path}"] = files
       return files
    end
 
