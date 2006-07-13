@@ -87,7 +87,9 @@ class Globals
       @@log = Log4r::Logger.new('gitarella')
 
       @@log.outputters = case $config["logging"]["output"].to_s.downcase
-         when "syslog" then   Log4r::SyslogOutputter.new("gitarella")
+         when "syslog" then
+            require 'log4r/outputter/syslogoutputter.rb'
+            Log4r::SyslogOutputter.new("gitarella")
          else                 Log4r::Outputter.stderr
       end
 
