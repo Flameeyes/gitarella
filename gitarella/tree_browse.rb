@@ -15,17 +15,6 @@
 # along with gitarella; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-begin
-  require 'rubygems'
-  require_gem 'diff-lcs', "1.1.1"
-  require 'diff/lcs/string'
-rescue LoadError
-  require 'diff/lcs'
-  require 'diff/lcs/string'
-end
-
-require 'text/format'
-
 module Gitarella
 class LCSDiff
    attr_reader :difflines
@@ -73,34 +62,46 @@ class GitarellaCGI
          binary = @template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
 
          case @cgi["mode"]
-            when "blobdiff"
+            when "blobdiff" then
                raise BinaryOperationInvalid if binary
-
-               tf = Text::Format.new
-               tf.tabstop = 4
-               preprocess = lambda { |line| tf.expand(line.chomp) }
-
-               @template_params["commit"] = @repo.commit(@commit_hash).to_hash
-               @template_params["old"] = Hash.new
-               @template_params["old"]["sha1"] = @cgi["hp"]
-               @template_params["old"]["data"] = @repo.file(@filepath, @cgi["hp"]).split("\n").map(&preprocess).map(&HTMLIZE)
-               @template_params["new"] = Hash.new
-               @template_params["new"]["sha1"] = @cgi["hn"]
-               @template_params["new"]["data"] = @repo.file(@filepath, @cgi["hn"]).split("\n").map(&preprocess).map(&HTMLIZE)
-
-               diff = LCSDiff.new
-               Diff::LCS.traverse_sequences(@template_params["old"]["data"], @template_params["new"]["data"], diff)
-               @template_params["difflines"] = diff.difflines
-
-               @content = parse_template("blobdiff")
-            when "checkout"
-               static_data(@template_params["file"]["data"])
+               blob_diff
+            when "checkout" then static_data(@template_params["file"]["data"])
             else
                static_data(@template_params["file"]["data"]) if binary
                @template_params["file"]["lines"] = @template_params["file"]["data"].split("\n").map(&HTMLIZE)
                @content = parse_template("blob")
          end
       end
+   end
+
+   def blob_diff
+      begin
+         require 'rubygems'
+         require_gem 'diff-lcs', "1.1.1"
+      rescue LoadError
+         require 'diff/lcs'
+      end
+
+      require 'diff/lcs/string'
+      require 'text/format'
+
+      tf = Text::Format.new
+      tf.tabstop = 4
+      preprocess = lambda { |line| tf.expand(line.chomp) }
+
+      @template_params["commit"] = @repo.commit(@commit_hash).to_hash
+      @template_params["old"] = Hash.new
+      @template_params["old"]["sha1"] = @cgi["hp"]
+      @template_params["old"]["data"] = @repo.file(@filepath, @cgi["hp"]).split("\n").map(&preprocess).map(&HTMLIZE)
+      @template_params["new"] = Hash.new
+      @template_params["new"]["sha1"] = @cgi["hn"]
+      @template_params["new"]["data"] = @repo.file(@filepath, @cgi["hn"]).split("\n").map(&preprocess).map(&HTMLIZE)
+
+      diff = LCSDiff.new
+      Diff::LCS.traverse_sequences(@template_params["old"]["data"], @template_params["new"]["data"], diff)
+      @template_params["difflines"] = diff.difflines
+
+      @content = parse_template("blobdiff")
    end
 
    def static_data(data)
