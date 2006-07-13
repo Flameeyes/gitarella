@@ -15,8 +15,6 @@
 # along with gitarella; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-require 'gitarella/gitcommit'
-
 class GITTag
    def GITTag.get(repo, sha1)
       return $memcache["gittag-#{sha1}"] if $memcache and $memcache["gittag-#{sha1}"]
