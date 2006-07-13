@@ -58,17 +58,31 @@ class Globals
       @@log
    end
 
+   class NoLog
+      def error(str)
+      end
+
+      def debug(str)
+      end
+   end
+
    def Globals.init_log
       case $config["logging"]["enabled"].to_s.downcase
          when "false", "no", "0"
-            throw NotImplemented_TODO.new
+            @@log = NoLog.new
+            return
       end
 
       begin
          require 'rubygems'
          require_gem 'log4r'
       rescue LoadError
-         require 'log4r'
+         begin
+            require 'log4r'
+         rescue
+            @@log = NoLog.new
+            return
+         end
       end
       @@log = Log4r::Logger.new('gitarella')
 
