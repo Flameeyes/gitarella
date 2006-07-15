@@ -18,10 +18,10 @@
 {% endcomment %}
 
 <div class="page_nav">
-<a href="{{currpath}}?mode=summary">summary</a> | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit_hash}}">log</a> | commit | <a href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/>
+<a href="{{currpath}}?mode=summary">summary</a> | <a href="{{currpath}}?mode=shortlog;h={{commit.sha1}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit.sha1}}">log</a> | commit | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/>
 <br/></div>
 <div>
-<a class="title" href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">{{commit.short_description | escapespecialchars}}</a>
+<a class="title" href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">{{commit.short_description | escapespecialchars}}</a>
 </div>
 <div class="title_text">
 <table cellspacing="0">
@@ -41,9 +41,9 @@
 <table cellspacing="0">
 {% for change in commit.changes %}
 <tr class="light">
-<td><a class="list" href="{{currpath}}{{change.file}}?mode=blobdiff;hn={{change.new_hash}};hp={{change.old_hash}};h={{commit_hash}}">{{change.file}}</a></td>
+<td><a class="list" href="{{currpath}}{{change.file}}?mode=blobdiff;hn={{change.new_hash}};hp={{change.old_hash}};h={{commit.sha1}}">{{change.file}}</a></td>
 <td></td>
-<td class="link"><a href="{{currpath}}{{change.file}}?hn={{change.new_hash}};h={{commit_hash}}">blob</a> | <a href="{{currpath}}{{change.file}}?mode=blobdiff;hn={{change.new_hash}};hp={{change.old_hash}};h={{commit_hash}}">diff</a> | <a href="{{currpath}}{{change.file}}?mode=history;h={{commit_hash}}">history</a>
+<td class="link"><a href="{{currpath}}{{change.file}}?hn={{change.new_hash}};h={{commit.sha1}}">blob</a> | <a href="{{currpath}}{{change.file}}?mode=blobdiff;hn={{change.new_hash}};hp={{change.old_hash}};h={{commit.sha1}}">diff</a> | <a href="{{currpath}}{{change.file}}?mode=history;h={{commit.sha1}}">history</a>
 </td>
 </tr>
 {% endfor %}

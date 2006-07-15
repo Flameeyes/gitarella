@@ -20,12 +20,12 @@
 <a href="{{basepath}}/{{repository.id}}/?mode=summary">summary</a> | 
 <a href="{{basepath}}/{{repository.id}}/?mode=shortlog">shortlog</a> | 
 <a href="{{basepath}}/{{repository.id}}/?mode=log">log</a> | 
-<a href="{{basepath}}/{{repository.id}}/?mode=commit;h={{commit_hash}}">commit</a> | 
-<a href="/?mode=commitdiff;h={{commit_hash}}">commitdiff</a><br/>
+<a href="{{basepath}}/{{repository.id}}/?mode=commit;h={{commit.sha1}}">commit</a> | 
+<a href="/?mode=commitdiff;h={{commit.sha1}}">commitdiff</a><br/>
 <a href="{{currpath}}?mode=checkout;blobh={{file.sha1}}">plain</a> | 
 <a href="{{currpath}}">head</a><br/>
 </div>
-<div><a class="title" href="{{basepath}}/{{repository.id}}/?mode=commit;h={{commit_hash}}">{{commit_desc}}</a></div>
+<div><a class="title" href="{{currpath}}?mode=commit;h={{commit.sha1}}">{{commit.short_description | escapespecialchars }}</a></div>
 <div class="page_body">
 {% specialfor line in file.lines %}
   <div class="pre"><a id="l{{forloop.index}}" href="#l{{forloop.index}}" class="linenr">{{forloop.aligidx}}{{forloop.index}}</a> {{line}}</div>

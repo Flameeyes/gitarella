@@ -17,10 +17,10 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 {% endcomment %}
 <div class="page_nav">
-<a href="{{currpath}}?mode=summary">summary</a> | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit_hash}}">log</a> | <a href="{{currpath}}?mode=commit;h={{commit_hash}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/>
+<a href="{{currpath}}?mode=summary">summary</a> | <a href="{{currpath}}?mode=shortlog;h={{commit.sha1}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit.sha1}}">log</a> | <a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/>
 <a href="{{currpath}}/?mode=blobdiff;style=plain;hn={{new.sha1};hp={{old.sha1}}">plain</a></div>
 <div>
-<a class="title" href="{{currpath}}?mode=commit;h={{commit_hash}}">{{commit.description}}</a>
+<a class="title" href="{{currpath}}?mode=commit;h={{commit.sha1}}">{{commit.description}}</a>
 </div>
 <div class="page_path"><b>{{filepath}}</b></div>
 <div class="page_body">

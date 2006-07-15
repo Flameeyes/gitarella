@@ -18,8 +18,8 @@
 {% endcomment %}
 
 <div class="page_nav">
-<a href="{{currpath}}?mode=summary">summary</a> | shortlog | <a href="{{currpath}}?mode=log;h={{commit_hash}}">log</a> | <a href="{{currpath}}?mode=commit;h={{commit_hash}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/>
-{% if commit_hash != repository.head.sha1 %}<a href="{{currpath}}?mode=shortlog">HEAD</a>
+<a href="{{currpath}}?mode=summary">summary</a> | shortlog | <a href="{{currpath}}?mode=log;h={{commit.sha1}}">log</a> | <a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/>
+{% if commit.sha1 != repository.head.sha1 %}<a href="{{currpath}}?mode=shortlog">HEAD</a>
 {% else %}HEAD{% endif %}
 &sdot;
 {% if prev_commits %}<a title="Alt-p" accesskey="p" href="{{currpath}}?mode=shortlog;h={{prev_commits}}">prev</a>

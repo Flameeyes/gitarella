@@ -18,20 +18,20 @@
 {% endcomment %}
 
 <div class="page_nav">
-<a href="{{currpath}}?mode=summary">summary</a> | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit_hash}}">log</a> | <a href="{{currpath}}?mode=commit;h={{commit_hash}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">commitdiff</a> | tree<br/><br/>
+<a href="{{currpath}}?mode=summary">summary</a> | <a href="{{currpath}}?mode=shortlog;h={{commit.sha1}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit.sha1}}">log</a> | <a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a> | tree<br/><br/>
 </div>
-<div><a class="title" href="{{currpath}}?mode=commit;h={{commit_hash}}">{{commit_desc | escapespecialchars }}</a></div>
+<div><a class="title" href="{{currpath}}?mode=commit;h={{commit.sha1}}">{{commit.short_description | escapespecialchars }}</a></div>
 <div class="page_body">
 <table cellspacing="0">
 
 {% for file in files_list %}
   <tr class="light">
   <td style="font-family:monospace">{{file.perms_string}}</td>
-  <td class="list"><a class="list" href="{{currpath}}{{file.name}}?hf={{file.sha1}};h={{commit_hash}}">{{file.name}}</a></td>
+  <td class="list"><a class="list" href="{{currpath}}{{file.name}}?hf={{file.sha1}};h={{commit.sha1}}">{{file.name}}</a></td>
   {% if file.type == "blob" %}
-    <td class="link"><a href="{{currpath}}{{file.name}}?mode=commit;hf={{file.sha1}};h={{commit_hash}}">commit</a> | <a href="{{currpath}}{{file.name}}?mode=history;h={{commit_hash}}">history</a></td>
+    <td class="link"><a href="{{currpath}}{{file.name}}?mode=commit;hf={{file.sha1}};h={{commit.sha1}}">commit</a> | <a href="{{currpath}}{{file.name}}?mode=history;h={{commit.sha1}}">history</a></td>
   {% else %}
-    <td class="link"><a href="{{currpath}}{{file.name}}?hf={{file.sha1}};h={{commit_hash}}">tree</a></td>
+    <td class="link"><a href="{{currpath}}{{file.name}}?hf={{file.sha1}};h={{commit.sha1}}">tree</a></td>
   {% endif %}
   </tr>
 {% endfor %}

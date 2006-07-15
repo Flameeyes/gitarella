@@ -18,7 +18,7 @@
 {% endcomment %}
 
 <div class="page_nav">
-summary | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit_hash}}">log</a> | <a href="{{currpath}}?mode=commit;h={{commit_hash}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/><br/>
+summary | <a href="{{currpath}}?mode=shortlog;h={{commit.sha1}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit.sha1}}">log</a> | <a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/><br/>
 </div>
 <div class="title">commit</div>
 <table cellspacing="0">

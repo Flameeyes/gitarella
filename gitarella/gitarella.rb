@@ -101,8 +101,7 @@ module Gitarella
          @commit_hash = (@cgi.has_key?("h") and not @cgi["h"].empty?) ? @cgi["h"] : @repo.head
 
          @template_params["title"] = "gitarella - #{@repo_id}"
-         @template_params["commit_hash"] = @commit_hash
-         @template_params["commit_desc"] = @repo.commit(@commit_hash).description
+         @template_params["commit"] = @repo.commit(@commit_hash).to_hash
          @template_params["files_list"] = @repo.list
          @template_params["repository"] = @repo.to_hash
       end
