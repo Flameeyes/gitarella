@@ -39,6 +39,11 @@ class GitarellaCGI
             @template_params["tag"] = GITTag.get(@repo, @cgi["htag"]).to_hash
             @content = parse_template("project-tag")
 
+         when "commitdiff"
+            throw NotImplemented_TODO.new
+
+         # Should this be really a fallback, or would be an exception handling
+         # a bit better?
          else # fallback
             @content = parse_template("tree")
       end
