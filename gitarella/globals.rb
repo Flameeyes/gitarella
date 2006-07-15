@@ -105,7 +105,12 @@ class Globals
       end
    end
 
+   def Globals.initialised
+      @initialised
+   end
+
    def Globals.init_all
+      @initialised = true
       init_log
    end
 end

@@ -36,6 +36,8 @@ module Gitarella
       attr_reader :path
 
       def initialize(cgi)
+         Globals::init_all unless Globals::initialised
+
          @cgi = cgi
          path_info = cgi.path_info ? cgi.path_info : ""
          @path = path_info.split(/\/+/).delete_if { |x| x.empty? }

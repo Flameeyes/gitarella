@@ -21,7 +21,6 @@ begin
 
    include Gitarella
 
-   Globals::init_all
    handle(CGI.new)
 rescue Exception => e
    initial = e.backtrace.delete_at(0)

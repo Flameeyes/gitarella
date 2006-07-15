@@ -35,8 +35,6 @@ require 'gitarella/gitarella'
 
 include Gitarella
 
-Globals::init_all
-
 countReq = 0; t0 = Time.new
 # Process CGI requests sent by the fastCGI engine
 FCGI.each_cgi do |cgi|
