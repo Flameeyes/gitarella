@@ -2,4 +2,6 @@
 - Add support for tag viewing.
 - Add support for SCGI.
 - Add exception handling on the bare cgi/fcgi level, for all the exceptions that
-  fails outside of the graceful handler, such as the loading ones.
+  fails outside of the graceful handler, such as the loading ones (done for CGI,
+  still to do for FastCGI).
+
