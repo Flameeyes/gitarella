@@ -88,6 +88,7 @@ class Globals
 
       case $config["logging"]["output"].to_s.downcase
          when "syslog" then
+            throw NotImplemented_TODO.new
             require 'log4r/outputter/syslogoutputter'
             @@log.outputters = Log4r::SyslogOutputter.new("gitarella")
          else
