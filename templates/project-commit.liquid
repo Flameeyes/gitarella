@@ -2,7 +2,7 @@
 <a href="{{currpath}}?mode=summary">summary</a> | <a href="{{currpath}}?mode=shortlog;h={{commit_hash}}">shortlog</a> | <a href="{{currpath}}?mode=log;h={{commit_hash}}">log</a> | commit | <a href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/>
 <br/></div>
 <div>
-<a class="title" href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">{{commit.short_description}}</a>
+<a class="title" href="{{currpath}}?mode=commitdiff;h={{commit_hash}}">{{commit.short_description | escapespecialchars}}</a>
 </div>
 <div class="title_text">
 <table cellspacing="0">
@@ -15,7 +15,7 @@
 <tr><td>parent</td><td style="font-family:monospace"><a class="list" href="{{currpath}}?mode=commit;h={{commit.parent_sha1}}">{{commit.parent_sha1}}</a></td><td class="link"><a href="{{currpath}}?mode=commit;h={{commit.parent_sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.parent_sha1}};hp={{commit.sha1}}">commitdiff</a></td></tr>
 </table></div>
 <div class="page_body">
-{{commit.description | nl2br }}
+{{commit.description | escapespecialchars | nl2br }}
 </div>
 <div class="list_head">
 </div>
