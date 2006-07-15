@@ -126,20 +126,20 @@ class GITRepo
    end
 
    def tags
-      return @cached_tags if @cached_tags
-
+      # Don't cache this value, as we don't get any notice if the tags were
+      # pushed to the repository.
       push_gitdir
 
       gitproc = IO.popen("git-tag -l")
 
-      @cached_tags = Array.new
+      tags = Array.new
       gitproc.read.split("\n").each { |tag|
-         @cached_tags << GITTag.get(self, tag)
+         tags << GITTag.get(self, tag)
       }
 
       gitproc.close
 
-      return @cached_tags
+      return tags
    end
 
    def last_change
