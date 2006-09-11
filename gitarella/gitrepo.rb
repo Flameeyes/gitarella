@@ -108,19 +108,18 @@ class GITRepo
    end
 
    def heads
-      p = Pathname.new(@path + "/refs/heads")
-      return unless p.directory?
-
+      # Don't cache this value, as we don't get any notice if the tags were
+      # pushed to the repository.
       heads = Hash.new
 
-      p.entries.each { |entry|
-         entry = Pathname.new(@path + "/refs/heads/" + entry)
-         next if entry.directory?
+      gitproc = IO.popen("git ls-remote --heads #{@path}")
 
-         heads[entry.basename] = entry.read.chomp
+      gitproc.read.split("\n").collect{ |l| l.split }.each { |head|
+         heads[head[1].sub("refs/heads/", "")] = head[0]
       }
 
-      Globals::log.debug heads.inspect
+      gitproc.close
+      Globals::log.debug "GITRepo Heads: #{heads.inspect}"
 
       return heads
    end
