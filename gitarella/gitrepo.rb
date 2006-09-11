@@ -126,18 +126,19 @@ class GITRepo
    end
 
    def tags
-      # Don't cache this value, as we don't get any notice if the tags were
-      # pushed to the repository.
-      push_gitdir
+      p = Pathname.new(@path + "/refs/tags")
+      return unless p.directory?
 
-      gitproc = IO.popen("git-tag -l")
+      tags = Hash.new
 
-      tags = Array.new
-      gitproc.read.split("\n").each { |tag|
-         tags << GITTag.get(self, tag)
+      p.entries.each { |entry|
+         entry = Pathname.new(@path + "/refs/tags/" + entry)
+         next if entry.directory?
+
+         tags[entry.basename] = entry.read.chomp
       }
 
-      gitproc.close
+      Globals::log.debug tags.inspect
 
       return tags
    end
