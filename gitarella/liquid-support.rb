@@ -48,8 +48,9 @@ module Gitarella
       end
 
       def htmlescape(input)
+         return "" unless input
          load_htmlentities
-         input ? input.encode_entities : ""
+         return input.encode_entities
       end
    end
 
