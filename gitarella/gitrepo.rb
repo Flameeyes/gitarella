@@ -135,7 +135,7 @@ class GITRepo
          entry = Pathname.new(@path + "/refs/tags/" + entry)
          next if entry.directory?
 
-         tags[entry.basename] = entry.read.chomp
+         tags[entry.basename] = GITTag.get(self, entry.read.chomp)
       }
 
       Globals::log.debug tags.inspect
@@ -161,8 +161,8 @@ class GITRepo
       }
 
       tagshashes = Array.new
-      tags.each { |tag|
-         tagshashes << tag.to_hash
+      tags.each_pair { |tag, com|
+         tagshashes << com.to_hash
       }
 
       head = commit ? commit.to_hash : {}
