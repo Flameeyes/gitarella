@@ -110,9 +110,15 @@ class Globals
    end
 
    @@config = nil
+   def Globals.config
+      @@config
+   end
+
    def Globals.init_all
       @initialised = true
       @@config = YAML::load(File.new("gitarella-config.yml").read)
+
+      @@config["title"] = "gitarella" unless @@config["title"]
 
       init_log
    end

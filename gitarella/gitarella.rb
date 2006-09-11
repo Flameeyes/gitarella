@@ -73,7 +73,7 @@ module Gitarella
          @template_params["sort"] = "id" if not @template_params["repositories"][0].has_key?(@template_params["sort"])
          @template_params["repositories"].sort! { |x, y| x[@template_params["sort"]] <=> y[@template_params["sort"]] }
 
-         @template_params["title"] = "gitarella - browse projects"
+         @template_params["title"] = "#{Globals::config["title"]} - browse projects"
          @content = parse_template("projects")
       end
 
@@ -98,7 +98,7 @@ module Gitarella
 
          @commit_hash = (@cgi.has_key?("h") and not @cgi["h"].empty?) ? @cgi["h"] : @repo.head
 
-         @template_params["title"] = "gitarella - #{@repo_id}"
+         @template_params["title"] = "#{Globals::config["title"]} - #{@repo_id}"
          @template_params["commit"] = @repo.commit(@commit_hash).to_hash
          @template_params["files_list"] = @repo.list
          @template_params["repository"] = @repo.to_hash
