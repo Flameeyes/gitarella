@@ -31,7 +31,16 @@
 <tr><td></td><td>{{commit.commit_time | date_str}}</td></tr>
 <tr><td>commit</td><td style="font-family:monospace">{{commit.sha1}}</td></tr>
 <tr><td>tree</td><td style="font-family:monospace"><a class="list" href="{{currpath}}?mode=tree;treehash={{commit.tree}}">{{commit.tree}}</a></td><td class="link"><a href="{{currpath}}?mode=tree;treehash={{commit.tree}}">tree</a></td></tr>
-<tr><td>parent</td><td style="font-family:monospace"><a class="list" href="{{currpath}}?mode=commit;h={{commit.parent_sha1}}">{{commit.parent_sha1}}</a></td><td class="link"><a href="{{currpath}}?mode=commit;h={{commit.parent_sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.parent_sha1}};hp={{commit.sha1}}">commitdiff</a></td></tr>
+{% for parent_sha1 in commit.parents_hashes %}
+<tr>
+  <td>parent</td>
+  <td style="font-family:monospace"><a class="list" href="{{currpath}}?mode=commit;h={{parent_sha1}}">{{parent_sha1}}</a></td>
+  <td class="link">
+    <a href="{{currpath}}?mode=commit;h={{parent_sha1}}">commit</a> |
+    <a href="{{currpath}}?mode=commitdiff;h={{parent_sha1}};hp={{commit.sha1}}">commitdiff</a>
+  </td>
+</tr>
+{% endfor %}
 </table></div>
 <div class="page_body">
 {{commit.description | htmlescape | nl2br }}
