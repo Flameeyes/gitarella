@@ -71,4 +71,14 @@ def str_reduce(str, len)
    "#{body}#{tail}"
 end
 
+def load_htmlentities
+   begin
+      require 'rubygems'
+      require_gem 'htmlentities', "3.0.1"
+      require 'htmlentities/string'
+   rescue LoadError
+      require 'htmlentities/string'
+   end
+end
+
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

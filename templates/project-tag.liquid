@@ -28,22 +28,22 @@ summary |
 </div>
 
 <div>
-<a class="title" href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">{{tag.name | escapespecialchars}}</a>
+<a class="title" href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">{{tag.name | htmlescape}}</a>
 </div>
 <div class="title_text">
 <table cellspacing="0">
 <tr>
 <td>object</td>
 <td><a class="list" href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">{{tag.commit.sha1}}</a></td>
-<td class="link"><a href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">commit | escapespecialchars</a></td>
+<td class="link"><a href="{{currpath}}?mode=commit;h={{tag.commit.sha1}}">commit | htmlescape</a></td>
 </tr>
-<tr><td>author</td><td>{{tag.tagger_name | escapespecialchars}} &lt;{{tag.tagger_mail}}&gt;</td></tr>
+<tr><td>author</td><td>{{tag.tagger_name | htmlescape}} &lt;{{tag.tagger_mail}}&gt;</td></tr>
 <tr><td></td><td>{{tag.tagger_time | date_str}}</td></tr>
 </table>
 
 </div>
 <div class="page_body">
-{{ tag.description | escapespecialchars | nl2br }}
+{{ tag.description | htmlescape | nl2br }}
 <br />
-{{ tag.gpg_signature | escapespecialchars | nl2br }}
+{{ tag.gpg_signature | htmlescape | nl2br }}
 </div>

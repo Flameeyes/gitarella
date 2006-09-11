@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require 'liquid'
+
 require 'gitarella/gitutils'
 
 module Gitarella
@@ -46,9 +47,9 @@ module Gitarella
          end
       end
 
-      def escapespecialchars(input)
-         return "" unless input
-         input.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;')
+      def htmlescape(input)
+         load_htmlentities
+         input ? input.encode_entities : ""
       end
    end
 

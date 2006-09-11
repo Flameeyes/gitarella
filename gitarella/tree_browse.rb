@@ -36,8 +36,6 @@ class LCSDiff
    end
 end
 
-HTMLIZE = lambda { |line| line.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;') }
-
 class GitarellaCGI
    def tree_browse
       get_repo_id
@@ -67,8 +65,9 @@ class GitarellaCGI
                blob_diff
             when "checkout" then static_data(@template_params["file"]["data"])
             else
+               load_htmlentities
                static_data(@template_params["file"]["data"]) if binary
-               @template_params["file"]["lines"] = @template_params["file"]["data"].split("\n").map(&HTMLIZE)
+               @template_params["file"]["lines"] = @template_params["file"]["data"].encode_entities.split("\n")
                @content = parse_template("blob")
          end
       end
@@ -85,6 +84,8 @@ class GitarellaCGI
       require 'diff/lcs/string'
       require 'text/format'
 
+      load_htmlentities
+
       tf = Text::Format.new
       tf.tabstop = 4
       preprocess = lambda { |line| tf.expand(line.chomp) }
@@ -92,10 +93,10 @@ class GitarellaCGI
       @template_params["commit"] = @repo.commit(@commit_hash).to_hash
       @template_params["old"] = Hash.new
       @template_params["old"]["sha1"] = @cgi["hp"]
-      @template_params["old"]["data"] = @repo.file(@filepath, @cgi["hp"]).split("\n").map(&preprocess).map(&HTMLIZE)
+      @template_params["old"]["data"] = @repo.file(@filepath, @cgi["hp"]).encode_entities.split("\n").map(&preprocess)
       @template_params["new"] = Hash.new
       @template_params["new"]["sha1"] = @cgi["hn"]
-      @template_params["new"]["data"] = @repo.file(@filepath, @cgi["hn"]).split("\n").map(&preprocess).map(&HTMLIZE)
+      @template_params["new"]["data"] = @repo.file(@filepath, @cgi["hn"]).encode_entities.split("\n").map(&preprocess)
 
       diff = LCSDiff.new
       Diff::LCS.traverse_sequences(@template_params["old"]["data"], @template_params["new"]["data"], diff)
