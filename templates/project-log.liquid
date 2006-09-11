@@ -32,7 +32,11 @@
 {% for commit in commits %}
 <div>
 <a class="title" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><span class="age">{{commit.commit_time | age_str}}</span>
-{{commit.short_description | htmlescape}}</a>
+{{commit.short_description | htmlescape}}
+  {% for tag in commit.tags %}
+    <span class="tag">{{tag}}</span>
+  {% endfor %}
+  </a>
 </div>
 <div class="title_text">
 <div class="log_link">

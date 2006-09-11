@@ -16,6 +16,8 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class GITTag
+   attr_reader :sha1, :commit
+
    def GITTag.get(repo, sha1)
       return Globals.cache["gittag-#{sha1}"] if Globals.cache["gittag-#{sha1}"]
 

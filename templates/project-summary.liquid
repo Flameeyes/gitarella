@@ -37,7 +37,11 @@ summary | <a href="{{currpath}}?mode=shortlog;h={{commit.sha1}}">shortlog</a> | 
   {% endif %}
 <td><i>{{commit.commit_time | age_str}}</i></td>
 <td><i>{{commit.author_name | htmlescape}}</i></td>
-<td><a class="list" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><b>{{commit.short_description | htmlescape | nl2br }}</b></a></td>
+<td><a class="list" href="{{currpath}}?mode=commit;h={{commit.sha1}}"><b>{{commit.short_description | htmlescape | nl2br }}
+  {% for tag in commit.tags %}
+    <span class="tag">{{tag}}</span>
+  {% endfor %}
+  </b></a></td>
 <td class="link"><a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a></td>
 </tr>
 {% endspecialfor  %}

@@ -72,6 +72,11 @@ class GITCommit
       @description = data[3..data.size].join("\n")
    end
 
+   def tags
+      @repo.tags.select { |k,v| v.commit.sha1 == @sha1 } .collect { |tag| tag[0] } +
+      @repo.heads.select { |k,v| v == @sha1 } .collect { |head| head[0] }
+   end
+
    def parents
       @parents.collect { |p| @repo.commit(p) }
    end
@@ -116,7 +121,8 @@ class GITCommit
          "author_mail" => @author_mail,
          "commit_name" => @commit_name, "commit_time" => @commit_time,
          "commit_mail" => @commit_mail,
-         "description" => description, "short_description" => short_description
+         "description" => description, "short_description" => short_description,
+         "tags" => tags
       }
    end
 end
