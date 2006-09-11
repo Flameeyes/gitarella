@@ -125,19 +125,19 @@ class GITRepo
    end
 
    def tags
-      p = Pathname.new(@path + "/refs/tags")
-      return unless p.directory?
-
+      # Don't cache this value, as we don't get any notice if the tags were
+      # pushed to the repository.
       tags = Hash.new
 
-      p.entries.each { |entry|
-         entry = Pathname.new(@path + "/refs/tags/" + entry)
-         next if entry.directory?
+      gitproc = IO.popen("git ls-remote --tags #{@path}")
 
-         tags[entry.basename] = GITTag.get(self, entry.read.chomp)
+      gitproc.read.split("\n").collect{ |l| l.split }.each { |tag|
+         next if tag[1] =~ /\^\{\}$/ # Ignore dereferences
+         tags[tag[1].sub("refs/tags/", "")] = GITTag.get(self, tag[0])
       }
 
-      Globals::log.debug tags.inspect
+      gitproc.close
+      Globals::log.debug "GITRepo Tags: #{heads.inspect}"
 
       return tags
    end
