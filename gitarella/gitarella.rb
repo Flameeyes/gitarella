@@ -20,8 +20,6 @@ require "yaml"
 require "liquid"
 require "pathname"
 
-$config = YAML::load(File.new("gitarella-config.yml").read)
-
 require "gitarella/exceptions"
 require "gitarella/gitrepo"
 require "gitarella/gitutils"

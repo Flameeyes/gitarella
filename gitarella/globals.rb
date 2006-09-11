@@ -25,11 +25,11 @@ class Globals
 
    def Globals.init_cache
       @@cache = Hash.new
-      return unless $config["memcache-servers"] and not $config["memcache-servers"].empty?
+      return unless @@config["memcache-servers"] and not @@config["memcache-servers"].empty?
 
       begin
          require "memcache"
-         memcache = MemCache::new($config["memcache-servers"], :namespace => 'gitarella', :compression => 'true')
+         memcache = MemCache::new(@@config["memcache-servers"], :namespace => 'gitarella', :compression => 'true')
          memcache["gitarella-test"] = true
          @@cache = memcache
       rescue LoadError
@@ -48,7 +48,7 @@ class Globals
    def Globals.init_repos
       @@repos = Hash.new
 
-      $config["repositories"].each { |repo|
+      @@config["repositories"].each { |repo|
          gitrepo = GITRepo.new(repo)
          @@repos[gitrepo.id] = gitrepo
       }
@@ -67,7 +67,7 @@ class Globals
    end
 
    def Globals.init_log
-      case $config["logging"]["enabled"].to_s.downcase
+      case @@config["logging"]["enabled"].to_s.downcase
          when "false", "no", "0"
             @@log = NoLog.new
             return
@@ -86,7 +86,7 @@ class Globals
       end
       @@log = Log4r::Logger.new('gitarella')
 
-      case $config["logging"]["output"].to_s.downcase
+      case @@config["logging"]["output"].to_s.downcase
          when "syslog" then
             throw NotImplemented_TODO.new
             require 'log4r/outputter/syslogoutputter'
@@ -95,7 +95,7 @@ class Globals
             @@log.outputters = Log4r::Outputter.stderr
       end
 
-      @@log.level = case $config["logging"]["level"].to_s.downcase
+      @@log.level = case @@config["logging"]["level"].to_s.downcase
          when "debug" then    Log4r::DEBUG
          when "info" then     Log4r::INFO
          when "warn" then     Log4r::WARN
@@ -109,8 +109,11 @@ class Globals
       @initialised
    end
 
+   @@config = nil
    def Globals.init_all
       @initialised = true
+      @@config = YAML::load(File.new("gitarella-config.yml").read)
+
       init_log
    end
 end
