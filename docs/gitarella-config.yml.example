@@ -14,5 +14,6 @@
     enabled: true, # Anything but 'false' or 'no' enables logging
     output: "stderr", # Legal values: 'stderr'
     level: "error" # Legal values: 'debug', 'info', 'warn', 'error', 'fatal'
-  }
+  },
+  title: "gitarella"
 }
