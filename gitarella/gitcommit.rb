@@ -43,16 +43,18 @@ class GITCommit
 
       Globals::log.debug data.inspect
 
+      @parents = Array.new
       verify_report = data[0].chomp; data.delete_at(0)
       @tree = data[0].split[1].chomp; data.delete_at(0)
-      if data[0] =~ /^parent.*/
-         @parent = data[0].split[1].chomp; data.delete_at(0)
-         return nil unless verify_report == "#{@sha1} #{@parent}"
-         # TODO Throw exception here
+      while data[0] =~ /^parent.*/
+         @parents << data[0].split[1].chomp
+         data.delete_at(0)
+      end
+
+      if @parents.size > 0
+         return nil unless verify_report == "#{@sha1} #{@parents.join(" ")}"
       else
-         @parent = nil
          return nil unless verify_report == "#{@sha1}"
-         # TODO Throw exception here
       end
 
       data[0] =~ /^author (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
@@ -70,15 +72,15 @@ class GITCommit
       @description = data[3..data.size].join("\n")
    end
 
-   def parent
-      @repo.commit(@parent)
+   def parents
+      @parents.collect { |p| @repo.commit(p) }
    end
 
    def short_description(size = 80)
       str_reduce(@description, size)
    end
 
-   def changes(base = @parent)
+   def changes(base = @parents[0])
       return Globals.cache["gitcommit-changes-#{sha1}_#{base}"] \
          if Globals.cache["gitcommit-changes-#{sha1}_#{base}"]
       changes = Array.new
@@ -109,7 +111,7 @@ class GITCommit
 
    def to_hash
       return {
-         "sha1" => @sha1, "tree" => @tree, "parent_sha1" => @parent,
+         "sha1" => @sha1, "tree" => @tree, "parents_hashes" => @parents,
          "author_name" => @author_name, "author_time" => @author_time,
          "author_mail" => @author_mail,
          "commit_name" => @commit_name, "commit_time" => @commit_time,

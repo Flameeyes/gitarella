@@ -57,7 +57,7 @@ class GitarellaCGI
       while commit and count < number
          @template_params["commits"] << commit.to_hash
 
-         commit = commit.parent
+         commit = commit.parents[0]
          count = count+1
       end
 
