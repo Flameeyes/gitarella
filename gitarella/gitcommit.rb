@@ -69,7 +69,7 @@ class GITCommit
       @commit_time = $3.to_i
       # commit_tz = $4 # TODO Implement timezone diff
 
-      @description = data[3..data.size].join("\n")
+      @description = data[3..data.size].join("\n").gsub(/\0/, '').chomp
    end
 
    def tags
