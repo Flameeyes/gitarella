@@ -23,11 +23,20 @@ class GitarellaCGI
       mode = @cgi.has_key?("mode") ? @cgi["mode"] : "tree"
       case mode
          when "summary"
-            get_commits(15)
+            @template_params["commits"] = Globals::repos[@repo_id].commits(15, 0, @commit_hash).collect { |c| c.to_hash }
             @content = parse_template("project-summary")
 
          when "shortlog", "log"
-            get_commits(30, @commit_hash)
+            start = @cgi.has_key?("start") ? @cgi["start"].to_i : 0
+            @template_params["commits"] = Globals::repos[@repo_id].commits(30, start, @commit_hash).collect { |c| c.to_hash }
+
+            @template_params["prev_commits"] =
+               if start == 0 then false
+               elsif (start-30) < 0 then 0
+               else start-30
+               end
+            @template_params["more_commits"] = start + 30
+
             @content = parse_template("project-" + mode)
 
          when "commit"
@@ -47,22 +56,6 @@ class GitarellaCGI
          else # fallback
             @content = parse_template("tree")
       end
-   end
-
-   def get_commits(number = 10, from = @commit_hash)
-      @template_params["commits"] = Array.new
-
-      commit = Globals::repos[@repo_id].commit(from)
-      count = 0
-      while commit and count < number
-         @template_params["commits"] << commit.to_hash
-
-         commit = commit.parents[0]
-         count = count+1
-      end
-
-      @template_params["prev_commits"] = ( from != Globals::repos[@repo_id].head ) ? Globals::repos[@repo_id].commit(from).sha1 : false
-      @template_params["more_commits"] = commit ? commit.sha1 : false
    end
 end
 end

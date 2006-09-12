@@ -19,13 +19,13 @@
 
 <div class="page_nav">
 <a href="{{currpath}}?mode=summary">summary</a> | <a href="{{currpath}}?mode=shortlog;h={{commit.sha1}}">shortlog</a> | log | <a href="{{currpath}}?mode=commit;h={{commit.sha1}}">commit</a> | <a href="{{currpath}}?mode=commitdiff;h={{commit.sha1}}">commitdiff</a> | <a href="{{currpath}}">tree</a><br/>
-{% if commit.sha1 != repository.head.sha1 %}<a href="{{currpath}}?mode=log">HEAD</a>
+{% if commit.sha1 != repository.head.sha1 %}<a href="{{currpath}}?mode=shortlog">HEAD</a>
 {% else %}HEAD{% endif %}
 &sdot;
-{% if prev_commits %}<a title="Alt-p" accesskey="p" href="{{currpath}}?mode=log;h={{prev_commits}}">prev</a>
+{% if prev_commits %}<a title="Alt-p" accesskey="p" href="{{currpath}}?mode=shortlog;start={{prev_commits}}">prev</a>
 {% else %}prev{% endif %}
 &sdot;
-{% if more_commits %}<a title="Alt-n" accesskey="n" href="{{currpath}}?mode=log;h={{more_commits}}">next</a>
+{% if more_commits %}<a title="Alt-n" accesskey="n" href="{{currpath}}?mode=shortlog;start={{more_commits}}">next</a>
 {% else %}next{% endif %}
 <br/>
 </div>

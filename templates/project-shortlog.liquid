@@ -22,10 +22,10 @@
 {% if commit.sha1 != repository.head.sha1 %}<a href="{{currpath}}?mode=shortlog">HEAD</a>
 {% else %}HEAD{% endif %}
 &sdot;
-{% if prev_commits %}<a title="Alt-p" accesskey="p" href="{{currpath}}?mode=shortlog;h={{prev_commits}}">prev</a>
+{% if prev_commits %}<a title="Alt-p" accesskey="p" href="{{currpath}}?mode=shortlog;start={{prev_commits}}">prev</a>
 {% else %}prev{% endif %}
 &sdot;
-{% if more_commits %}<a title="Alt-n" accesskey="n" href="{{currpath}}?mode=shortlog;h={{more_commits}}">next</a>
+{% if more_commits %}<a title="Alt-n" accesskey="n" href="{{currpath}}?mode=shortlog;start={{more_commits}}">next</a>
 {% else %}next{% endif %}
 <br/>
 </div>

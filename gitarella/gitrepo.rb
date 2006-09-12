@@ -65,6 +65,18 @@ class GITRepo
       return ret
    end
 
+   def commits(amount, skip = 0, start = "HEAD")
+      push_gitdir
+
+      Globals::log.debug "Executing git-rev-list --max-count=#{amount+skip} #{start}"
+      gitproc = IO.popen("git-rev-list --max-count=#{amount+skip} #{start}")
+      commits = gitproc.read.split("\n").slice(skip..-1).collect { |sha1|
+         GITCommit.get(self, sha1) }
+
+      gitproc.close
+      return commits
+   end
+
    def list(path = ".", sha1 = @head)
       return Globals.cache["git-list_#{commit.tree}_#{path}"] \
          if Globals.cache["git-list_#{commit.tree}_#{path}"]
