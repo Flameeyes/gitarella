@@ -88,28 +88,21 @@ class GITCommit
    def changes(base = @parents[0])
       return Globals.cache["gitcommit-changes-#{sha1}_#{base}"] \
          if Globals.cache["gitcommit-changes-#{sha1}_#{base}"]
-      changes = Array.new
 
       @repo.push_gitdir
       gitproc = IO.popen("git-diff-tree -r #{base} #{sha1}")
 
-      gitproc.each_line { |line|
-         change = Hash.new
-
+      changes = gitproc.readlines.collect { |line|
          line =~ /^:([0-7]{6}) ([0-7]{6}) ([0-9a-f]{40}) ([0-9a-f]{40}) ([A-Z]+)[ \t]*(.*)$/
-         change["old_mode"] = $1
-         change["new_mode"] = $2
-         change["old_hash"] = $3
-         change["new_hash"] = $4
-         change["flags"] = $5
-         change["file"] = $6
 
-         changes << change
+         { "old_mode" => $1, "new_mode" => $2,
+           "old_hash" => $3, "new_hash" => $4,
+           "flags" => $5, "file" => $6 }
       }
+      gitproc.close
 
       Globals::log.debug changes.inspect
 
-      gitproc.close
       Globals.cache["gitcommit-changes-#{sha1}_#{base}"] = changes
       return changes
    end
