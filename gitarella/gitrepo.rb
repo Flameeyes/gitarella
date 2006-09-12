@@ -124,7 +124,7 @@ class GITRepo
       # pushed to the repository.
       heads = Hash.new
 
-      gitproc = IO.popen("git ls-remote --heads #{@path}")
+      gitproc = IO.popen("git-ls-remote --heads #{@path}")
 
       gitproc.read.split("\n").collect{ |l| l.split }.each { |head|
          heads[head[1].sub("refs/heads/", "")] = head[0]
@@ -141,7 +141,7 @@ class GITRepo
       # pushed to the repository.
       tags = Hash.new
 
-      gitproc = IO.popen("git ls-remote --tags #{@path}")
+      gitproc = IO.popen("git-ls-remote --tags #{@path}")
 
       gitproc.read.split("\n").collect{ |l| l.split }.each { |tag|
          next if tag[1] =~ /\^\{\}$/ # Ignore dereferences
