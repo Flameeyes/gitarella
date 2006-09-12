@@ -70,7 +70,7 @@ class GITRepo
 
       Globals::log.debug "Executing git-rev-list --max-count=#{amount+skip} #{start}"
       gitproc = IO.popen("git-rev-list --max-count=#{amount+skip} #{start}")
-      commits = gitproc.read.split("\n").slice(skip..-1).collect { |sha1|
+      commits = gitproc.readlines.slice(skip..-1).collect { |sha1|
          GITCommit.get(self, sha1) }
 
       gitproc.close
@@ -126,7 +126,7 @@ class GITRepo
 
       gitproc = IO.popen("git-ls-remote --heads #{@path}")
 
-      gitproc.read.split("\n").collect{ |l| l.split }.each { |head|
+      gitproc.readlines.collect{ |l| l.split }.each { |head|
          heads[head[1].sub("refs/heads/", "")] = head[0]
       }
 
@@ -143,7 +143,7 @@ class GITRepo
 
       gitproc = IO.popen("git-ls-remote --tags #{@path}")
 
-      gitproc.read.split("\n").collect{ |l| l.split }.each { |tag|
+      gitproc.readlines.collect{ |l| l.split }.each { |tag|
          next if tag[1] =~ /\^\{\}$/ # Ignore dereferences
          tags[tag[1].sub("refs/tags/", "")] = GITTag.get(self, tag[0])
       }

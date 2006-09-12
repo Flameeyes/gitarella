@@ -36,7 +36,7 @@ class GITCommit
 
       repo.push_gitdir
       gitproc = IO.popen("git-rev-list --header --parents --max-count=1 #{@sha1}")
-      data = gitproc.read.split("\n")
+      data = gitproc.readlines
       gitproc.close
 
       raise CommitNotFound.new(@repo, @sha1) if data.empty?
