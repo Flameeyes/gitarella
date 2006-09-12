@@ -171,10 +171,7 @@ class GITRepo
             }
       }
 
-      tagshashes = Array.new
-      tags.each_pair { |tag, com|
-         tagshashes << com.to_hash
-      }
+      tagshashes = tags.values.collect { |tag| tag.to_hash }
 
       head = commit ? commit.to_hash : {}
 
