@@ -149,7 +149,7 @@ class GITRepo
       }
 
       gitproc.close
-      Globals::log.debug "GITRepo Tags: #{heads.inspect}"
+      Globals::log.debug "GITRepo Tags: #{tags.inspect}"
 
       return tags
    end
