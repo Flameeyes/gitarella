@@ -35,9 +35,7 @@ class GITCommit
       @sha1 = sha1
 
       repo.push_gitdir
-      gitproc = IO.popen("git-rev-list --header --parents --max-count=1 #{@sha1}")
-      data = gitproc.readlines
-      gitproc.close
+      data = `git-rev-list --header --parents --max-count=1 #{@sha1}`.split($/)
 
       raise CommitNotFound.new(@repo, @sha1) if data.empty?
 
@@ -90,16 +88,13 @@ class GITCommit
          if Globals.cache["gitcommit-changes-#{sha1}_#{base}"]
 
       @repo.push_gitdir
-      gitproc = IO.popen("git-diff-tree -r #{base} #{sha1}")
-
-      changes = gitproc.readlines.collect { |line|
+      changes = `git-diff-tree -r #{base} #{sha1}`.split($/).collect { |line|
          line =~ /^:([0-7]{6}) ([0-7]{6}) ([0-9a-f]{40}) ([0-9a-f]{40}) ([A-Z]+)[ \t]*(.*)$/
 
          { "old_mode" => $1, "new_mode" => $2,
            "old_hash" => $3, "new_hash" => $4,
            "flags" => $5, "file" => $6 }
       }
-      gitproc.close
 
       Globals::log.debug changes.inspect
 

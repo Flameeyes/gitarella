@@ -50,11 +50,7 @@ class GITRepo
       return unless tag
 
       push_gitdir
-      gitproc = IO.popen("git-rev-parse --verify #{tag}")
-      head = gitproc.read.chomp
-      gitproc.close
-
-      return head
+      return `git-rev-parse --verify #{tag}`.chomp
    end
 
    def commit(sha1 = @head)
@@ -69,12 +65,10 @@ class GITRepo
       push_gitdir
 
       Globals::log.debug "Executing git-rev-list --max-count=#{amount+skip} #{start}"
-      gitproc = IO.popen("git-rev-list --max-count=#{amount+skip} #{start}")
-      commits = gitproc.readlines.slice(skip..-1).collect { |sha1|
-         GITCommit.get(self, sha1) }
 
-      gitproc.close
-      return commits
+      return `git-rev-list --max-count=#{amount+skip} #{start}`.split($/).slice(skip..-1).collect {
+         |sha1| GITCommit.get(self, sha1)
+      }
    end
 
    def list(path = ".", sha1 = @head)
@@ -84,9 +78,7 @@ class GITRepo
       files = Array.new
 
       push_gitdir
-      gitproc = IO.popen("git-ls-tree #{commit.tree} #{path}")
-
-      gitproc.each_line { |line|
+      `git-ls-tree #{commit.tree} #{path}`.each_line { |line|
          linedata = line.split
 
          files << { "perms" => linedata[0].oct, "perms_string" => mode_str(linedata[0].oct),
@@ -94,8 +86,6 @@ class GITRepo
       }
 
       Globals::log.debug files.inspect
-
-      gitproc.close
 
       Globals.cache["git-list_#{commit.tree}_#{path}"] = files
       return files
@@ -105,18 +95,12 @@ class GITRepo
       Globals::log.debug "GITRepo.file(#{path   }, #{sha1.inspect})"
       push_gitdir
 
-      if not sha1 or sha1.empty?
-         listing = list(path)[0]
-         return unless listing
+      return `git-cat-file blob #{sha1}` if sha1 and not sha1.empty?
 
-         gitproc = IO.popen("git-cat-file #{listing["type"]} #{listing["sha1"]}")
-      else
-         gitproc = IO.popen("git-cat-file blob #{sha1}")
-      end
-      data = gitproc.read
+      listing = list(path)[0]
+      return unless listing
 
-      gitproc.close
-      return data
+      return `git-cat-file #{listing["type"]} #{listing["sha1"]}`
    end
 
    def heads
@@ -124,13 +108,10 @@ class GITRepo
       # pushed to the repository.
       heads = Hash.new
 
-      gitproc = IO.popen("git-ls-remote --heads #{@path}")
-
-      gitproc.readlines.collect{ |l| l.split }.each { |head|
-         heads[head[1].sub("refs/heads/", "")] = head[0]
+      `git-ls-remote --heads #{@path}`.split($/).collect{ |l| l.split }.each {
+         |head| heads[head[1].sub("refs/heads/", "")] = head[0]
       }
 
-      gitproc.close
       Globals::log.debug "GITRepo Heads: #{heads.inspect}"
 
       return heads
@@ -141,14 +122,11 @@ class GITRepo
       # pushed to the repository.
       tags = Hash.new
 
-      gitproc = IO.popen("git-ls-remote --tags #{@path}")
-
-      gitproc.readlines.collect{ |l| l.split }.each { |tag|
+      `git-ls-remote --tags #{@path}`.split($/).collect{ |l| l.split }.each { |tag|
          next if tag[1] =~ /\^\{\}$/ # Ignore dereferences
          tags[tag[1].sub("refs/tags/", "")] = GITTag.get(self, tag[0])
       }
 
-      gitproc.close
       Globals::log.debug "GITRepo Tags: #{tags.inspect}"
 
       return tags

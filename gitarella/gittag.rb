@@ -35,15 +35,11 @@ class GITTag
 
       if @sha1.hex == 0
          @repo.push_gitdir
-         gitproc = IO.popen("git-rev-parse --verify #{sha1}")
-         @sha1 = gitproc.read.chomp
-         gitproc.close
+         @sha1 = `git-rev-parse --verify #{sha1}`.chomp
       end
 
       repo.push_gitdir
-      gitproc = IO.popen("git-cat-file tag #{sha1}")
-      data = gitproc.read.split("\n")
-      gitproc.close
+      data = `git-cat-file tag #{sha1}`.split($/)
 
       raise TagNotFound.new(@repo, @sha1) if data.empty?
 
