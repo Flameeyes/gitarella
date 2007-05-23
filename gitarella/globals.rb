@@ -74,34 +74,27 @@ class Globals
       end
 
       begin
-         require 'rubygems'
-         require_gem 'log4r'
+        require 'logger'
       rescue LoadError
-         begin
-            require 'log4r'
-         rescue
-            @@log = NoLog.new
-            return
-         end
+        @@log = NoLog.new
+        return
       end
-      @@log = Log4r::Logger.new('gitarella')
 
       case @@config["logging"]["output"].to_s.downcase
-         when "syslog" then
-            throw NotImplemented_TODO.new
-            require 'log4r/outputter/syslogoutputter'
-            @@log.outputters = Log4r::SyslogOutputter.new("gitarella")
-         else
-            @@log.outputters = Log4r::Outputter.stderr
+      when "syslog" then
+        throw NotImplemented_TODO.new
+        # @@log.outputters = Log4r::SyslogOutputter.new("gitarella")
+      else
+        @@log.outputters = Logger.new(STDERR)
       end
 
-      @@log.level = case @@config["logging"]["level"].to_s.downcase
-         when "debug" then    Log4r::DEBUG
-         when "info" then     Log4r::INFO
-         when "warn" then     Log4r::WARN
-         when "error" then    Log4r::ERROR
-         when "fatal" then    Log4r::FATAL
-         else                 Log4r::WARN
+      @@log.sev_threshold = case @@config["logging"]["level"].to_s.downcase
+         when "debug" then    Logger::DEBUG
+         when "info" then     Logger::INFO
+         when "warn" then     Logger::WARN
+         when "error" then    Logger::ERROR
+         when "fatal" then    Logger::FATAL
+         else                 Logger::WARN
       end
    end
 

@@ -10,7 +10,7 @@
   # uncomment the following to enable memcached support.
   # Requires Ruby-MemCache extension
   # , memcache-servers: [ "127.0.0.1:11211" ]
-  logging: { # Logging requires log4r extension to work
+  logging: {
     enabled: true, # Anything but 'false' or 'no' enables logging
     output: "stderr", # Legal values: 'stderr'
     level: "error" # Legal values: 'debug', 'info', 'warn', 'error', 'fatal'
