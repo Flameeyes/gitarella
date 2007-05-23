@@ -85,7 +85,7 @@ class Globals
         throw NotImplemented_TODO.new
         # @@log.outputters = Log4r::SyslogOutputter.new("gitarella")
       else
-        @@log.outputters = Logger.new(STDERR)
+        @@log = Logger.new(STDERR)
       end
 
       @@log.sev_threshold = case @@config["logging"]["level"].to_s.downcase
