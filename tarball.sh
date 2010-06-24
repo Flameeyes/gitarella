@@ -8,7 +8,7 @@ fi
 
 rm -rf "gitarella-${version}"
 mkdir "gitarella-${version}"
-git-ls-files | xargs tar cf - | tar xf - -C "gitarella-${version}"
+git ls-files | xargs tar cf - | tar xf - -C "gitarella-${version}"
 
 cg-log -f > "gitarella-${version}"/docs/ChangeLog
 

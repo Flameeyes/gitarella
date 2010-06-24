@@ -50,7 +50,7 @@ class GITRepo
       return unless tag
 
       push_gitdir
-      return `git-rev-parse --verify #{tag}`.chomp
+      return `git rev-parse --verify #{tag}`.chomp
    end
 
    def commit(sha1 = @head)
@@ -64,9 +64,9 @@ class GITRepo
    def commits(amount, skip = 0, start = "HEAD")
       push_gitdir
 
-      Globals::log.debug "Executing git-rev-list --max-count=#{amount+skip} #{start}"
+      Globals::log.debug "Executing git rev-list --max-count=#{amount+skip} #{start}"
 
-      return `git-rev-list --max-count=#{amount+skip} #{start}`.split($/).slice(skip..-1).collect {
+      return `git rev-list --max-count=#{amount+skip} #{start}`.split($/).slice(skip..-1).collect {
          |sha1| GITCommit.get(self, sha1)
       }
    end
@@ -78,7 +78,7 @@ class GITRepo
       files = Array.new
 
       push_gitdir
-      `git-ls-tree #{commit.tree} #{path}`.each_line { |line|
+      `git ls-tree #{commit.tree} #{path}`.each_line { |line|
          linedata = line.split
 
          files << { "perms" => linedata[0].oct, "perms_string" => mode_str(linedata[0].oct),
@@ -87,7 +87,7 @@ class GITRepo
 
       Globals::log.debug files.inspect
 
-      Globals.cache["git-list_#{commit.tree}_#{path}"] = files
+      Globals.cache["git list_#{commit.tree}_#{path}"] = files
       return files
    end
 
@@ -95,12 +95,12 @@ class GITRepo
       Globals::log.debug "GITRepo.file(#{path   }, #{sha1.inspect})"
       push_gitdir
 
-      return `git-cat-file blob #{sha1}` if sha1 and not sha1.empty?
+      return `git cat-file blob #{sha1}` if sha1 and not sha1.empty?
 
       listing = list(path)[0]
       return unless listing
 
-      return `git-cat-file #{listing["type"]} #{listing["sha1"]}`
+      return `git cat-file #{listing["type"]} #{listing["sha1"]}`
    end
 
    def heads
@@ -108,7 +108,7 @@ class GITRepo
       # pushed to the repository.
       heads = Hash.new
 
-      `git-ls-remote --heads #{@path}`.split($/).collect{ |l| l.split }.each {
+      `git ls-remote --heads #{@path}`.split($/).collect{ |l| l.split }.each {
          |head| heads[head[1].sub("refs/heads/", "")] = head[0]
       }
 
@@ -122,7 +122,7 @@ class GITRepo
       # pushed to the repository.
       tags = Hash.new
 
-      `git-ls-remote --tags #{@path}`.split($/).collect{ |l| l.split }.each { |tag|
+      `git ls-remote --tags #{@path}`.split($/).collect{ |l| l.split }.each { |tag|
          next if tag[1] =~ /\^\{\}$/ # Ignore dereferences
          tags[tag[1].sub("refs/tags/", "")] = GITTag.get(self, tag[0])
       }

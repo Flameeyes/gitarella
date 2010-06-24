@@ -35,7 +35,7 @@ class GITCommit
       @sha1 = sha1
 
       repo.push_gitdir
-      data = `git-rev-list --header --parents --max-count=1 #{@sha1}`.split($/)
+      data = `git rev-list --header --parents --max-count=1 #{@sha1}`.split($/)
 
       raise CommitNotFound.new(@repo, @sha1) if data.empty?
 
@@ -88,7 +88,7 @@ class GITCommit
          if Globals.cache["gitcommit-changes-#{sha1}_#{base}"]
 
       @repo.push_gitdir
-      changes = `git-diff-tree -r #{base} #{sha1}`.split($/).collect { |line|
+      changes = `git diff-tree -r #{base} #{sha1}`.split($/).collect { |line|
          line =~ /^:([0-7]{6}) ([0-7]{6}) ([0-9a-f]{40}) ([0-9a-f]{40}) ([A-Z]+)[ \t]*(.*)$/
 
          { "old_mode" => $1, "new_mode" => $2,

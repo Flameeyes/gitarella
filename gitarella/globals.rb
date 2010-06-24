@@ -109,7 +109,7 @@ class Globals
 
    def Globals.init_all
       @initialised = true
-      @@config = YAML::load(File.new("gitarella-config.yml").read)
+      @@config = YAML::load(File.new("#{File.dirname(__FILE__)}/../gitarella-config.yml").read)
 
       @@config["title"] = "gitarella" unless @@config["title"]
 
