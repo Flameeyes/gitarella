@@ -74,10 +74,15 @@ end
 def load_htmlentities
    begin
       require 'rubygems'
-      require_gem 'htmlentities', "3.0.1"
-      require 'htmlentities/string'
+      gem 'htmlentities', "~> 4.2"
+      require 'htmlentities'
    rescue LoadError
-      require 'htmlentities/string'
+      require 'htmlentities'
+   end
+
+   String.send :define_method, :encode_entities do
+     @@html_coder ||= HTMLEntities.new('xhtml1')
+     @@html_coder.encode(self)
    end
 end
 

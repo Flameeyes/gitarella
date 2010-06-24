@@ -76,7 +76,7 @@ class GitarellaCGI
    def blob_diff
       begin
          require 'rubygems'
-         require_gem 'diff-lcs', "1.1.1"
+         gem 'diff-lcs', "1.1.2"
       rescue LoadError
          require 'diff/lcs'
       end

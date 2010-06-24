@@ -55,9 +55,9 @@ module Gitarella
    end
 
    class SpecialFor < Liquid::Block
-      Syntax = /(\w+)\s+in\s+(#{Liquid::AllowedVariableCharacters}+)/
+      Syntax = /(\w+)\s+in\s+(#{Liquid::VariableSegment}+)/
 
-      def initialize(markup, tokens)
+      def initialize(tag_name, markup, tokens)
          super
 
          if markup =~ Syntax
@@ -113,7 +113,7 @@ module Gitarella
    end
 
    Liquid::Template.register_filter(LiquidFilters)
-   Liquid::Template.register_block('specialfor', Gitarella::SpecialFor)
+   Liquid::Template.register_tag('specialfor', Gitarella::SpecialFor)
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;
