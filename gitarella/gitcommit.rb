@@ -15,6 +15,7 @@
 # along with gitarella; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+module Gitarella
 class GITCommit
    attr_accessor :author_name, :author_time, :commit_name, :commit_time, :tree,
       :sha1, :description
@@ -113,6 +114,7 @@ class GITCommit
          "tags" => tags
       }
    end
+end
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

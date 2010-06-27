@@ -15,6 +15,7 @@
 # along with gitarella; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+module Gitarella
 class GITTag
    attr_reader :sha1, :commit
 
@@ -84,6 +85,7 @@ class GITTag
         "tagger_mail" => @tagger_mail, "tagger_time" => @tagger_time,
         "commit" => @commit.to_hash }
    end
+end
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

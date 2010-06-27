@@ -18,6 +18,7 @@
 require 'gitarella/gitcommit'
 require 'gitarella/gittag'
 
+module Gitarella
 class GITRepo
    attr_accessor :path, :description, :owner, :valid, :id, :head
 
@@ -159,6 +160,7 @@ class GITRepo
         "tags" => tagshashes, "has_tags" => (not tagshashes.empty?),
         "head" => head }
    end
+end
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

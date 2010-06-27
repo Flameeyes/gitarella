@@ -20,14 +20,14 @@ class GitarellaCGI
    def project_show
       get_repo_id
 
-      mode = @cgi.has_key?("mode") ? @cgi["mode"] : "tree"
+      mode = params["mode"] || "tree"
       case mode
          when "summary"
             @template_params["commits"] = Globals::repos[@repo_id].commits(15, 0, @commit_hash).collect { |c| c.to_hash }
             @content = parse_template("project-summary")
 
          when "shortlog", "log"
-            start = @cgi.has_key?("start") ? @cgi["start"].to_i : 0
+            start = params["start"].to_i
             @template_params["commits"] = Globals::repos[@repo_id].commits(30, start, @commit_hash).collect { |c| c.to_hash }
 
             @template_params["prev_commits"] =
@@ -45,7 +45,7 @@ class GitarellaCGI
             @content = parse_template("project-commit")
 
          when "tag"
-            @template_params["tag"] = GITTag.get(@repo, @cgi["htag"]).to_hash
+            @template_params["tag"] = GITTag.get(@repo, params["htag"]).to_hash
             @content = parse_template("project-tag")
 
          when "commitdiff"

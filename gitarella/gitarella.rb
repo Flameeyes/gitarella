@@ -32,105 +32,102 @@ require "gitarella/globals"
 require "gitarella/liquid-support"
 
 module Gitarella
-   class GitarellaCGI
-      attr_reader :path, :request, :response
+  class GitarellaCGI
+    attr_reader :path, :request, :response
 
-      def initialize
-         Globals::init_all unless Globals::initialised
-      end
+    def initialize
+      Globals::init_all unless Globals::initialised
+      @template_params = {}
+    end
 
-      def project_list
-         @template_params["repositories"] = Array.new
-         Globals::repos.each_value { |gitrepo|
-            next unless gitrepo.valid
-            @template_params["repositories"] << gitrepo.to_hash
-         }
+    def params
+      @params ||= request.params
+    end
 
-         @template_params["sort"] = @cgi.has_key?("sort") ? @cgi["sort"] : "id"
-         @template_params["sort"] = "id" if not @template_params["repositories"][0].has_key?(@template_params["sort"])
-         @template_params["repositories"].sort! { |x, y| x[@template_params["sort"]] <=> y[@template_params["sort"]] }
+    def project_list
+      @template_params["repositories"] = Array.new
+      Globals::repos.each_value { |gitrepo|
+        next unless gitrepo.valid
+        @template_params["repositories"] << gitrepo.to_hash
+      }
 
-         @template_params["title"] = "#{Globals::config["title"]} - browse projects"
-         @content = parse_template("projects")
-      end
+      @template_params["sort"] = params["sort"] || "id"
+      @template_params["sort"] = "id" if not @template_params["repositories"][0].has_key?(@template_params["sort"])
+      @template_params["repositories"].sort! { |x, y| x[@template_params["sort"]] <=> y[@template_params["sort"]] }
 
-      def static_file(path)
-         staticfile = File.open(path)
-         begin
-            require "filemagic"
-            staticmime = FileMagic.new(FileMagic::MAGIC_MIME|FileMagic::MAGIC_SYMLINK).file(path)
-         rescue LoadError
-            Globals::log.error "unable to load 'filemagic' extension, mime support will be disabled."
-            staticmime = "application/octet-stream"
-         end
+      @template_params["title"] = "#{Globals::config["title"]} - browse projects"
+      @content = parse_template("projects")
+    end
 
-         @cgi.out({ "content-type" => staticmime}) { staticfile.read }
-         raise StaticOutput
-      end
-
-      def get_repo_id
-         @repo_id = @path[0]; @path.delete_at(0)
-         raise RepositoryNotFound.new(@repo_id) unless Globals::repos.has_key?(@repo_id)
-         @repo = Globals::repos[@repo_id]
-
-         @commit_hash = (@cgi.has_key?("h") and not @cgi["h"].empty?) ? @cgi["h"] : @repo.head
-
-         @template_params["title"] = "#{Globals::config["title"]} - #{@repo_id}"
-         @template_params["commit"] = @repo.commit(@commit_hash).to_hash
-         @template_params["files_list"] = @repo.list
-         @template_params["repository"] = @repo.to_hash
-      end
-
-      def parse_template(name, params = @template_params)
-         Liquid::Template.parse( File.open("templates/#{name}.liquid").read ).render(params)
-      end
-
-      def call(env)
-        @request = Rack::Request.new(env)
-        @response = Rack::Response.new
-
-        @path = request.path_info.split(/\/+/).delete_if { |x| x.empty? }
-        # Rule out the static files immediately
-        static_file(".#{request.path_info}") if @path[0] == "static"
-        response.write "<pre>#{@path.join('-').encode_entities}</pre>"
-        @template_params = {
-          "basepath" => request.script_name,
-          "currpath" => (request.script_name + path_info + "/").gsub("//", "/")
-        }
-
-        case path.size
-        when 0 then project_list
-        when 1 then project_show
-        else tree_browse
-        end
-
-        @template_params["content"] = @content
-        response.write parse_template("main")
-        response.finish
-      end
-
-   end
-
-   def handle(cgi)
+    def static_file(path)
+      staticfile = File.open(path)
       begin
-         GitarellaCGI.new(cgi)
-      rescue StaticOutput # We served a static page for whatever reason, just exit
-         return
-      rescue FileNotFound => err404
-         cgi.out({"status" => CGI::HTTP_STATUS["NOT_FOUND"]}) {
-            Liquid::Template.parse( File.open("templates/exception.liquid").read ).render(
-               { "basepath" => cgi.script_name, "title" => "Not found",
-               "message" => err404.message, "backtrace" => err404.backtrace } )
-         }
-      rescue Exception => error
-         cgi.out({"status" => CGI::HTTP_STATUS["SERVER_ERROR"]}) {
-            Liquid::Template.parse( File.open("templates/exception.liquid").read ).render(
-               { "basepath" => cgi.script_name, "title" => "Error",
-               "message" => error.message, "backtrace" => error.backtrace } )
-         }
-         raise
+        require "filemagic"
+        staticmime = FileMagic.new(FileMagic::MAGIC_MIME|FileMagic::MAGIC_SYMLINK).file(path)
+      rescue LoadError
+        Globals::log.error "unable to load 'filemagic' extension, mime support will be disabled."
+        staticmime = "application/octet-stream"
       end
-   end
+
+      response["content-type"] = staticmime
+      response.write staticfile.read
+      raise StaticOutput
+    end
+
+    def get_repo_id
+      @repo_id = @path[0]; @path.delete_at(0)
+      raise RepositoryNotFound.new(@repo_id) unless Globals::repos.has_key?(@repo_id)
+      @repo = Globals::repos[@repo_id]
+
+      @commit_hash = params["h"] || @repo.head
+
+      @template_params["title"] = "#{Globals::config["title"]} - #{@repo_id}"
+      @template_params["commit"] = @repo.commit(@commit_hash).to_hash
+      @template_params["files_list"] = @repo.list
+      @template_params["repository"] = @repo.to_hash
+    end
+
+    def parse_template(name, params = @template_params)
+      Liquid::Template.parse( File.open("templates/#{name}.liquid").read ).render(params)
+    end
+
+    def call(env)
+      @request = Rack::Request.new(env)
+      @response = Rack::Response.new
+
+      @path = request.path_info.split(/\/+/).delete_if { |x| x.empty? }
+      # Rule out the static files immediately
+      static_file(".#{request.path_info}") if @path[0] == "static"
+      @template_params = {
+        "basepath" => request.script_name,
+        "currpath" => (request.script_name + request.path_info + "/").gsub("//", "/")
+      }
+
+      @content = ""
+
+      case path.size
+      when 0 then project_list
+      when 1 then project_show
+      else tree_browse
+      end
+
+      @template_params["content"] = @content
+      response.write parse_template("main")
+
+      return response.finish
+    rescue StaticOutput # We served a static page for whatever reason, just exit
+      return response.finish
+#     rescue FileNotFound => err404
+#       template = Liquid::Template.parse(File.open("templates/exception.liquid").read)
+#       response["status"] = CGI::HTTP_STATUS["NOT_FOUND"]
+#       response.write template.render("basepath" => request.script_name,
+#                                      "title" => "Not found",
+#                                      "message" => err404.message,
+#                                      "backtrace" => err404.backtrace)
+#       return response.finish
+    end
+
+  end
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

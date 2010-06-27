@@ -18,57 +18,57 @@
 
 # age_string function took from gitweb
 def age_string(age)
-   age = age.to_i
-   if age > 60*60*24*365*2
-      return "#{(age/(60*60*24*365)).to_i} years ago"
-   elsif age > 60*60*24*(365/12)*2
-      return "#{(age/(60*60*24*(365/12))).to_i} months ago"
-   elsif age > 60*60*24*7*2
-      return "#{(age/(60*60*24*7)).to_i} weeks ago"
-   elsif age > 60*60*24*2
-      return "#{(age/(60*60*24)).to_i} days ago"
-   elsif age > 60*60*2
-      return "#{(age/(60*60)).to_i} hours ago"
-   elsif age > 60*2
-      return "#{(age/60).to_i} mins ago"
-   elsif age > 2
-      return "#{(age).to_i} secs ago"
-   else
-      return "right now"
-   end
+  age = age.to_i
+  if age > 60*60*24*365*2
+    return "#{(age/(60*60*24*365)).to_i} years ago"
+  elsif age > 60*60*24*(365/12)*2
+    return "#{(age/(60*60*24*(365/12))).to_i} months ago"
+  elsif age > 60*60*24*7*2
+    return "#{(age/(60*60*24*7)).to_i} weeks ago"
+  elsif age > 60*60*24*2
+    return "#{(age/(60*60*24)).to_i} days ago"
+  elsif age > 60*60*2
+    return "#{(age/(60*60)).to_i} hours ago"
+  elsif age > 60*2
+    return "#{(age/60).to_i} mins ago"
+  elsif age > 2
+    return "#{(age).to_i} secs ago"
+  else
+    return "right now"
+  end
 end
 
 # mode_str function took from gitweb
 def mode_str(mode)
-   vS_IFMT = 0170000
-   vS_IFDIR = 040000
-   vS_IFLNK = 0120000
-   vS_IFREG = 0100000
-   vS_IXUSR = 0100
+  vS_IFMT = 0170000
+  vS_IFDIR = 040000
+  vS_IFLNK = 0120000
+  vS_IFREG = 0100000
+  vS_IXUSR = 0100
 
-   if mode&vS_IFMT == vS_IFDIR
-      return 'drwxr-xr-x'
-   elsif mode == vS_IFLNK
-      return 'lrwxrwxrwx'
-   elsif mode&vS_IFMT == vS_IFREG
-      if mode & vS_IXUSR
-         return '-rwxr-xr-x'
-      else
-         return '-rw-r--r--'
-      end
-   else
-      return '----------'
-   end
+  if mode&vS_IFMT == vS_IFDIR
+    return 'drwxr-xr-x'
+  elsif mode == vS_IFLNK
+    return 'lrwxrwxrwx'
+  elsif mode&vS_IFMT == vS_IFREG
+    if mode & vS_IXUSR
+      return '-rwxr-xr-x'
+    else
+      return '-rw-r--r--'
+    end
+  else
+    return '----------'
+  end
 end
 
 # originally chop_str in gitweb
 def str_reduce(str, len)
-   str =~ /^(.{0,#{len}}[^ \/\-_:\.@]{0,5})(.*)/
-   body = $1
-   tail = $2
-   tail = "..." if tail and tail.size > 4
+  str =~ /^(.{0,#{len}}[^ \/\-_:\.@]{0,5})(.*)/
+    body = $1
+  tail = $2
+  tail = "..." if tail and tail.size > 4
 
-   "#{body}#{tail}"
+  "#{body}#{tail}"
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; 
