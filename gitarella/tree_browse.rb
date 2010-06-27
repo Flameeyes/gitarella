@@ -65,7 +65,6 @@ class GitarellaCGI
                blob_diff
             when "checkout" then static_data(@template_params["file"]["data"])
             else
-               load_htmlentities
                static_data(@template_params["file"]["data"]) if binary
                @template_params["file"]["lines"] = @template_params["file"]["data"].encode_entities.split("\n")
                @content = parse_template("blob")
@@ -83,8 +82,6 @@ class GitarellaCGI
 
       require 'diff/lcs/string'
       require 'text/format'
-
-      load_htmlentities
 
       tf = Text::Format.new
       tf.tabstop = 4

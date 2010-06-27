@@ -71,19 +71,5 @@ def str_reduce(str, len)
    "#{body}#{tail}"
 end
 
-def load_htmlentities
-   begin
-      require 'rubygems'
-      gem 'htmlentities', "~> 4.2"
-      require 'htmlentities'
-   rescue LoadError
-      require 'htmlentities'
-   end
-
-   String.send :define_method, :encode_entities do
-     @@html_coder ||= HTMLEntities.new('xhtml1')
-     @@html_coder.encode(self)
-   end
-end
-
-# kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;
+# kate: encoding UTF-8; remove-trailing-space on; 
+# replace-trailing-space-save on; space-indent on; indent-width 3;

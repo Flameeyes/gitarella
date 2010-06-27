@@ -19,47 +19,24 @@ require "cgi"
 require "yaml"
 require "liquid"
 require "pathname"
+require 'rack/request'
+require 'rack/response'
 
+require "gitarella/support"
 require "gitarella/exceptions"
 require "gitarella/gitrepo"
 require "gitarella/gitutils"
 require "gitarella/project_show"
 require "gitarella/tree_browse"
 require "gitarella/globals"
-
 require "gitarella/liquid-support"
 
 module Gitarella
    class GitarellaCGI
-      attr_reader :path
+      attr_reader :path, :request, :response
 
-      def initialize(cgi)
+      def initialize
          Globals::init_all unless Globals::initialised
-
-         @cgi = cgi
-         path_info = cgi.path_info ? cgi.path_info : ""
-         @path = path_info.split(/\/+/).delete_if { |x| x.empty? }
-
-         # Rule out the static files immediately
-         static_file(".#{cgi.path_info}") if @path[0] == "static"
-
-         @template_params = {
-            "basepath" => cgi.script_name,
-            "currpath" => (cgi.script_name + path_info + "/").gsub("//", "/")
-         }
-
-         @content = ""
-
-         case path.size
-            when 0 then project_list
-            when 1 then project_show
-            else tree_browse
-         end
-
-         @template_params["content"] = @content
-         @cgi.out {
-            parse_template("main")
-         }
       end
 
       def project_list
@@ -107,6 +84,31 @@ module Gitarella
       def parse_template(name, params = @template_params)
          Liquid::Template.parse( File.open("templates/#{name}.liquid").read ).render(params)
       end
+
+      def call(env)
+        @request = Rack::Request.new(env)
+        @response = Rack::Response.new
+
+        @path = request.path_info.split(/\/+/).delete_if { |x| x.empty? }
+        # Rule out the static files immediately
+        static_file(".#{request.path_info}") if @path[0] == "static"
+        response.write "<pre>#{@path.join('-').encode_entities}</pre>"
+        @template_params = {
+          "basepath" => request.script_name,
+          "currpath" => (request.script_name + path_info + "/").gsub("//", "/")
+        }
+
+        case path.size
+        when 0 then project_list
+        when 1 then project_show
+        else tree_browse
+        end
+
+        @template_params["content"] = @content
+        response.write parse_template("main")
+        response.finish
+      end
+
    end
 
    def handle(cgi)
