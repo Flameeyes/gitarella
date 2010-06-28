@@ -16,11 +16,11 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 module Gitarella
-class GITCommit
-   attr_accessor :author_name, :author_time, :commit_name, :commit_time, :tree,
+  class GITCommit
+    attr_accessor :author_name, :author_time, :commit_name, :commit_time, :tree,
       :sha1, :description
 
-   def GITCommit.get(repo, sha1)
+    def GITCommit.get(repo, sha1)
       return Globals.cache["gitcommit-#{sha1}"] if Globals.cache["gitcommit-#{sha1}"]
 
       ret = GITCommit.new(repo, sha1)
@@ -28,9 +28,9 @@ class GITCommit
       Globals.cache["gitcommit-#{sha1}"] = ret
 
       return ret
-   end
+    end
 
-   def initialize(repo, sha1)
+    def initialize(repo, sha1)
       Globals::log.debug "GITCommit:initialize(#{repo}, #{sha1})"
       @repo = repo
       @sha1 = sha1
@@ -46,75 +46,75 @@ class GITCommit
       verify_report = data[0].chomp; data.delete_at(0)
       @tree = data[0].split[1].chomp; data.delete_at(0)
       while data[0] =~ /^parent.*/
-         @parents << data[0].split[1].chomp
-         data.delete_at(0)
+        @parents << data[0].split[1].chomp
+        data.delete_at(0)
       end
 
       if @parents.size > 0
-         return nil unless verify_report == "#{@sha1} #{@parents.join(" ")}"
+        return nil unless verify_report == "#{@sha1} #{@parents.join(" ")}"
       else
-         return nil unless verify_report == "#{@sha1}"
+        return nil unless verify_report == "#{@sha1}"
       end
 
       data[0] =~ /^author (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
-      @author_name = $1
+        @author_name = $1
       @author_mail = $2
       @author_time = $3.to_i
       # author_tz = $4 # TODO Implement timezone diff
 
       data[1] =~ /^committer (.*) <(.*)> ([0-9]+) (\+[0-9]{4})$/
-      @commit_name = $1
+        @commit_name = $1
       @commit_mail = $2
       @commit_time = $3.to_i
       # commit_tz = $4 # TODO Implement timezone diff
 
       @description = data[3..data.size].join("\n").gsub(/\0/, '').chomp
-   end
+    end
 
-   def tags
+    def tags
       @repo.tags.select { |k,v| v.commit.sha1 == @sha1 } .collect { |tag| tag[0] } +
-      @repo.heads.select { |k,v| v == @sha1 } .collect { |head| head[0] }
-   end
+        @repo.heads.select { |k,v| v == @sha1 } .collect { |head| head[0] }
+    end
 
-   def parents
+    def parents
       @parents.collect { |p| @repo.commit(p) }
-   end
+    end
 
-   def short_description(size = 80)
+    def short_description(size = 80)
       str_reduce(@description, size)
-   end
+    end
 
-   def changes(base = @parents[0])
+    def changes(base = @parents[0])
       return Globals.cache["gitcommit-changes-#{sha1}_#{base}"] \
-         if Globals.cache["gitcommit-changes-#{sha1}_#{base}"]
+      if Globals.cache["gitcommit-changes-#{sha1}_#{base}"]
 
-      @repo.push_gitdir
-      changes = `git diff-tree -r #{base} #{sha1}`.split($/).collect { |line|
-         line =~ /^:([0-7]{6}) ([0-7]{6}) ([0-9a-f]{40}) ([0-9a-f]{40}) ([A-Z]+)[ \t]*(.*)$/
+        @repo.push_gitdir
+        changes = `git diff-tree -r #{base} #{sha1}`.split($/).collect { |line|
+          line =~ /^:([0-7]{6}) ([0-7]{6}) ([0-9a-f]{40}) ([0-9a-f]{40}) ([A-Z]+)[ \t]*(.*)$/
 
-         { "old_mode" => $1, "new_mode" => $2,
-           "old_hash" => $3, "new_hash" => $4,
-           "flags" => $5, "file" => $6 }
-      }
+            { "old_mode" => $1, "new_mode" => $2,
+              "old_hash" => $3, "new_hash" => $4,
+              "flags" => $5, "file" => $6 }
+        }
 
-      Globals::log.debug changes.inspect
+        Globals::log.debug changes.inspect
 
-      Globals.cache["gitcommit-changes-#{sha1}_#{base}"] = changes
-      return changes
-   end
+        Globals.cache["gitcommit-changes-#{sha1}_#{base}"] = changes
+        return changes
+      end
 
-   def to_hash
-      return {
-         "sha1" => @sha1, "tree" => @tree, "parents_hashes" => @parents,
-         "author_name" => @author_name, "author_time" => @author_time,
-         "author_mail" => @author_mail,
-         "commit_name" => @commit_name, "commit_time" => @commit_time,
-         "commit_mail" => @commit_mail,
-         "description" => description, "short_description" => short_description,
-         "tags" => tags
-      }
-   end
-end
-end
+      def to_hash
+        return {
+          "sha1" => @sha1, "tree" => @tree, "parents_hashes" => @parents,
+          "author_name" => @author_name, "author_time" => @author_time,
+          "author_mail" => @author_mail,
+          "commit_name" => @commit_name, "commit_time" => @commit_time,
+          "commit_mail" => @commit_mail,
+          "description" => description, "short_description" => short_description,
+          "tags" => tags
+        }
+      end
+    end
+  end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

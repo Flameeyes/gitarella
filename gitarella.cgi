@@ -17,14 +17,14 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 begin
-   require 'gitarella/gitarella'
+  require 'gitarella/gitarella'
 
-   include Gitarella
+  include Gitarella
 
-   handle(CGI.new)
+  handle(CGI.new)
 rescue Exception => e
-   initial = e.backtrace.delete_at(0)
-   puts "#{initial}: uncaught exception #{e.message}\n\tfrom:#{e.backtrace.join("\n\tfrom: ")}"
+  initial = e.backtrace.delete_at(0)
+  puts "#{initial}: uncaught exception #{e.message}\n\tfrom:#{e.backtrace.join("\n\tfrom: ")}"
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

@@ -25,11 +25,11 @@ require 'fcgi'
 # is neither GET/HEAD/POST. Default behaviour is to read input from
 # STDIN. Not really useful when your webserver gets OPTIONS / :-(
 class CGI
-   module QueryExtension
-      def read_from_cmdline
-         ''
-      end
-   end
+  module QueryExtension
+    def read_from_cmdline
+      ''
+    end
+  end
 end
 
 require 'gitarella/gitarella'
@@ -39,12 +39,12 @@ include Gitarella
 countReq = 0; t0 = Time.new
 # Process CGI requests sent by the fastCGI engine
 FCGI.each_cgi do |cgi|
-   countReq += 1
-   handle(cgi)
+  countReq += 1
+  handle(cgi)
 
-   # Garbage Collect regularly to help keep memory
-   # footprint low enough without costing too much time.
-   GC.start if countReq%50==0
+  # Garbage Collect regularly to help keep memory
+  # footprint low enough without costing too much time.
+  GC.start if countReq%50==0
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

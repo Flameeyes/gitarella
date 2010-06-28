@@ -16,48 +16,48 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 module Gitarella
-class GitarellaCGI
-   def project_show
+  class GitarellaCGI
+    def project_show
       get_repo_id
 
       mode = params["mode"] || "tree"
       case mode
-         when "summary"
-            @template_params["commits"] = Globals::repos[@repo_id].commits(15, 0, @commit_hash).collect { |c| c.to_hash }
-            @content = parse_template("project-summary")
+      when "summary"
+        @template_params["commits"] = Globals::repos[@repo_id].commits(15, 0, @commit_hash).collect { |c| c.to_hash }
+        @content = parse_template("project-summary")
 
-         when "shortlog", "log"
-            start = params["start"].to_i
-            @template_params["commits"] = Globals::repos[@repo_id].commits(30, start, @commit_hash).collect { |c| c.to_hash }
+      when "shortlog", "log"
+        start = params["start"].to_i
+        @template_params["commits"] = Globals::repos[@repo_id].commits(30, start, @commit_hash).collect { |c| c.to_hash }
 
-            @template_params["prev_commits"] =
-               if start == 0 then false
-               elsif (start-30) < 0 then 0
-               else start-30
-               end
-            @template_params["more_commits"] = start + 30
+        @template_params["prev_commits"] =
+          if start == 0 then false
+          elsif (start-30) < 0 then 0
+          else start-30
+          end
+        @template_params["more_commits"] = start + 30
 
-            @content = parse_template("project-" + mode)
+        @content = parse_template("project-" + mode)
 
-         when "commit"
-            @template_params["commit"] = @repo.commit(@commit_hash).to_hash
-            @template_params["commit"]["changes"] = @repo.commit(@commit_hash).changes
-            @content = parse_template("project-commit")
+      when "commit"
+        @template_params["commit"] = @repo.commit(@commit_hash).to_hash
+        @template_params["commit"]["changes"] = @repo.commit(@commit_hash).changes
+        @content = parse_template("project-commit")
 
-         when "tag"
-            @template_params["tag"] = GITTag.get(@repo, params["htag"]).to_hash
-            @content = parse_template("project-tag")
+      when "tag"
+        @template_params["tag"] = GITTag.get(@repo, params["htag"]).to_hash
+        @content = parse_template("project-tag")
 
-         when "commitdiff"
-            throw NotImplemented_TODO.new
+      when "commitdiff"
+        throw NotImplemented_TODO.new
 
-         # Should this be really a fallback, or would be an exception handling
-         # a bit better?
-         else # fallback
-            @content = parse_template("tree")
+        # Should this be really a fallback, or would be an exception handling
+        # a bit better?
+      else # fallback
+        @content = parse_template("tree")
       end
-   end
-end
+    end
+  end
 end
 
 # kate: encoding UTF-8; remove-trailing-space on; replace-trailing-space-save on; space-indent on; indent-width 3;

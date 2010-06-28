@@ -57,18 +57,19 @@ module Gitarella
       else
         @template_params["file"] = @repo.list(@filepath)[0]
         @template_params["file"]["data"] = @repo.file(@filepath, params["blobh"])
-        binary = @template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/
+        binary = (@template_params["file"]["data"] =~ /[^\x20-\x7e\s]{4,5}/)
 
-          case params["mode"]
-          when "blobdiff" then
-            raise BinaryOperationInvalid if binary
-            blob_diff
-          when "checkout" then static_data(@template_params["file"]["data"])
-          else
-            static_data(@template_params["file"]["data"]) if binary
-            @template_params["file"]["lines"] = @template_params["file"]["data"].encode_entities.split("\n")
-            @content = parse_template("blob")
-          end
+        case params["mode"]
+        when "blobdiff"
+          raise BinaryOperationInvalid if binary
+          blob_diff
+        when "checkout"
+          static_data(@template_params["file"]["data"])
+        else
+          static_data(@template_params["file"]["data"]) if binary
+          @template_params["file"]["lines"] = @template_params["file"]["data"].encode_entities.split("\n")
+          @content = parse_template("blob")
+        end
       end
     end
 

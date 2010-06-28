@@ -17,69 +17,69 @@
 
 module Gitarella
 
-class StaticOutput < Exception
-end
+  class StaticOutput < Exception
+  end
 
-class FileNotFound < Exception
-   def message
+  class FileNotFound < Exception
+    def message
       "Generic File Not Found exception"
-   end
-end
+    end
+  end
 
-class RepositoryNotFound < FileNotFound
-   def initialize(id)
+  class RepositoryNotFound < FileNotFound
+    def initialize(id)
       @repo_id = id
-   end
+    end
 
-   def message
+    def message
       "Unable to find repository #{@repo_id}"
-   end
-end
+    end
+  end
 
-class RepoFileNotFound < FileNotFound
-   def initialize(repo, file)
+  class RepoFileNotFound < FileNotFound
+    def initialize(repo, file)
       @repo_id = repo.is_a?(GITRepo) ? repo.id : repo
       @file = file
-   end
+    end
 
-   def message
+    def message
       "Unable to find '#{@file}' in repository #{@repo_id}"
-   end
-end
+    end
+  end
 
-class CommitNotFound < FileNotFound
-   def initialize(repo, commit)
+  class CommitNotFound < FileNotFound
+    def initialize(repo, commit)
       @repo_id = repo.is_a?(GITRepo) ? repo.id : repo
       @commit = commit
-   end
+    end
 
-   def message
+    def message
       "Unable to find commit with SHA1 '#{@commit}' in repository #{@repo_id}"
-   end
-end
+    end
+  end
 
-class TagNotFound < FileNotFound
-   def initialize(repo, commit)
+  class TagNotFound < FileNotFound
+    def initialize(repo, commit)
       @repo_id = repo.is_a?(GITRepo) ? repo.id : repo
       @commit = commit
-   end
+    end
 
-   def message
+    def message
       "Unable to find tag with SHA1 '#{@commit}' in repository #{@repo_id}"
-   end
-end
+    end
+  end
 
-class BinaryOperationInvalid < Exception
-   def message
+  class BinaryOperationInvalid < Exception
+    def message
       "Unable to perform the requested operation on a binary file."
-   end
-end
+    end
+  end
 
-class NotImplemented_TODO < Exception
-   def message
+  class NotImplemented_TODO < Exception
+    def message
       "Sorry this feature is not implemented yet."
-   end
-end
+    end
+  end
 
 end
 
